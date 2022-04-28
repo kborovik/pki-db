@@ -4,16 +4,19 @@ The repository is abased on the excellent work of "OpenSSL PKI Tutorial" team. (
 
 # How to Use
 
-- Checkout the repository
+- Checkout repository
 - Run `rm -rf .git`
 - Run `make clean`
 - Update `etc/root-ca.conf`, `etc/signing-ca.conf` `etc/server.conf`
 - Export:
-  - `TLS_CN` - TLS CommonName
-  - `TLS_SAN` - TLS subjectAltName
+  - `TLS_CN` (CommonName)
+  - `TLS_SAN` (subjectAltName)
 - Run `make all`
+- Run `git init && git add --all && git commit -m 'initial commit'`
 
 # Example
+
+## Create New Certificate
 
 ```
 > export TLS_CN=vault.lab5.ca
