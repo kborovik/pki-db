@@ -1,16 +1,23 @@
 # About
 
+This repository helps to implement TLS PKIs with the OpenSSL toolkit.
+
 The repository is abased on the excellent work of "OpenSSL PKI Tutorial" team. (https://pki-tutorial.readthedocs.io/en/latest/index.html)
 
 # How to Use
 
+## Create New PKI
+
 - Checkout repository
 - Run `rm -rf .git`
 - Run `make clean`
-- Update `etc/root-ca.conf`, `etc/signing-ca.conf` `etc/server.conf`
-- Export:
-  - `TLS_CN` (CommonName)
-  - `TLS_SAN` (subjectAltName)
+- Update DN information in `etc/root-ca.conf`, `etc/signing-ca.conf`, `etc/server.conf`
+- Set:
+  - `export TLS_CN=vault.lab5.ca` (CommonName)
+  - `export TLS_SAN=DNS:vault.lab5.ca,IP:10.0.0.2` (subjectAltName)
+  - `export PKI_ROOT_PASSWD=BigPassword`
+  - `export PKI_SIGNING_PASSWD=SmallPassword`
+  - `export PKI_SERVER_PASSWD=TinyPassword`
 - Run `make all`
 - Run `git init && git add --all && git commit -m 'initial commit'`
 
