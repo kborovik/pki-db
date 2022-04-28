@@ -23,7 +23,12 @@ settings:
 ###############################################################################
 all: pki-root-crt pki-signing-crt pki-server-crt
 
+clean: pki-clean pki-db
+
 pki-db: pki-root-db pki-signing-db
+
+pki-clean:
+	-rm -rf ca crl certs
 
 dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db crl certs
 
