@@ -16,11 +16,6 @@ settings:
 	echo "# - TLS_CN  = $(TLS_CN)"
 	echo "# - TLS_SAN = $(TLS_SAN)"
 	echo "#"
-	echo "# Example:"
-	echo "# > export TLS_CN=www.lab5.ca"
-	echo "# > export TLS_SAN=DNS:www.lab5.ca,IP=10.0.0.2"
-	echo "# > make all"
-	echo "#"
 	echo "######################################################################"
 
 ###############################################################################
@@ -45,7 +40,7 @@ server_pem := certs/$(TLS_CN).pem
 server_ca := certs/$(TLS_CN).ca
 
 $(server_csr): 
-	openssl req -new -config etc/server.conf -out $(server_csr) -keyout $(server_key)
+	openssl req -new -config etc/server.conf -out $(server_csr) -keyout $(server_key) -passout "pass:$(PKI_SERVER_PASSWD)"
 
 $(server_crt): $(server_csr)
 	openssl ca -config etc/signing-ca.conf -in $(server_csr) -out $(server_crt) -extensions server_ext -passin "pass:$(PKI_SIGNING_PASSWD)"

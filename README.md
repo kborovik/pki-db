@@ -25,11 +25,6 @@ The repository is abased on the excellent work of "OpenSSL PKI Tutorial" team. (
 # - TLS_CN  = vault.lab5.ca
 # - TLS_SAN = DNS:vault.lab5.ca,IP:10.0.0.2
 #
-# Example:
-# > export TLS_CN=www.lab5.ca
-# > export TLS_SAN=DNS:www.lab5.ca,IP=10.0.0.2
-# > make all
-#
 ######################################################################
 >
 > make all
