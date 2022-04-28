@@ -10,13 +10,35 @@ The repository is abased on the excellent work of "OpenSSL PKI Tutorial" team. (
   - `TLS_CN` - TLS CommonName
   - `TLS_SAN` - TLS subjectAltName
 - Run `make all`
+- Get new certificate from `certs/`
 
 # Example
 
 ```
 > export TLS_CN=www.lab5.ca
-> export DNS:vault.lab5.ca,IP:10.0.0.2
+> export TLS_SAN=DNS:vault.lab5.ca,IP:10.0.0.2
 >
 > make
+######################################################################
+#
+# Settings:
+# - TLS_CN  = vault.lab5.ca
+# - TLS_SAN = DNS:vault.lab5.ca,IP:10.0.0.2
+#
+# Example:
+# > export TLS_CN=www.lab5.ca
+# > export TLS_SAN=DNS:www.lab5.ca,IP=10.0.0.2
+# > make all
+#
+######################################################################
+>
 > make all
+>
+> tree certs/
+certs/
+├── vault.lab5.ca.ca
+├── vault.lab5.ca.crt
+├── vault.lab5.ca.csr
+├── vault.lab5.ca.key
+└── vault.lab5.ca.pem
 ```
