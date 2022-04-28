@@ -2,7 +2,9 @@
 
 This repository helps to implement TLS PKIs with the OpenSSL toolkit.
 
-The repository is abased on the excellent work of "OpenSSL PKI Tutorial" team. (https://pki-tutorial.readthedocs.io/en/latest/index.html)
+The repository is abased on the excellent work of "OpenSSL PKI Tutorial" team.
+
+https://pki-tutorial.readthedocs.io/en/latest/index.html
 
 # How to Use
 
