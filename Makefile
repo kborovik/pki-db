@@ -2,8 +2,8 @@
 .SILENT:
 .EXPORT_ALL_VARIABLES:
 
-TLS_CN ?= vault.lab5.ca
-TLS_SAN ?= DNS:vault.lab5.ca,IP:127.0.0.1
+TLS_CN ?=
+TLS_SAN ?=
 
 PKI_ROOT_PASSWD ?= $(shell pass pki/lab5/root-ca-key-passwd)
 PKI_SIGNING_PASSWD ?= $(shell pass pki/lab5/signing-ca-key-passwd)
@@ -123,7 +123,7 @@ $(server_crt): $(signing_crt) $(server_csr)
 	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
-	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -certfile $(root_ca) -name $(TLS_CN) -nodes -aes128 -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
+	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -certfile $(root_ca) -name $(TLS_CN) -aes128 -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
 $(server_pem): $(server_key) $(server_crt)
 	cat $(server_key) $(server_crt) > $@
