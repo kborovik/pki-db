@@ -9,7 +9,8 @@ PKI_ROOT_PASSWD ?= $(shell pass pki/lab5/root-ca-key-passwd)
 PKI_SIGNING_PASSWD ?= $(shell pass pki/lab5/signing-ca-key-passwd)
 PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 
-pkey_algorithm ?= RSA # Valid algorithm names for private key generation are RSA, RSA-PSS, EC, X25519, X448, ED25519 and ED448
+# Valid algorithm names for private key generation are RSA, RSA-PSS, EC, X25519, X448, ED25519 and ED448
+pkey_algorithm ?= ED25519
 
 settings:
 	echo "######################################################################"
@@ -53,13 +54,13 @@ $(root_crl): $(dirs)
 	echo 01 > $@
 
 $(root_key):
-	openssl genpkey -algorithm $(pkey_algorithm) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-128-cbc -pass pass:$(PKI_ROOT_PASSWD) -out $@
 
 $(root_csr): $(root_key)
-	openssl req -new -config etc/root-ca.conf -key $(root_key) -passout "pass:$(PKI_ROOT_PASSWD)" -out $@
+	openssl req -new -config etc/root-ca.conf -key $(root_key) -passin pass:$(PKI_ROOT_PASSWD) -out $@
 
 $(root_crt): $(root_csr)
-	openssl ca -selfsign -config etc/root-ca.conf -in $(root_csr) -extensions root_ca_ext -passin "pass:$(PKI_ROOT_PASSWD)" -out $@
+	openssl ca -selfsign -config etc/root-ca.conf -in $(root_csr) -extensions root_ca_ext -passin pass:$(PKI_ROOT_PASSWD) -out $@
 
 pki-root-db: $(root_db) $(root_crl)
 
@@ -84,13 +85,13 @@ $(signing_crl): $(dirs)
 	echo 01 > $@
 
 $(signing_key):
-	openssl genpkey -algorithm $(pkey_algorithm) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-128-cbc -pass pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(signing_csr): $(signing_key)
-	openssl req -new -config etc/signing-ca.conf -key $(signing_key) -passout "pass:$(PKI_SIGNING_PASSWD)" -out $@
+	openssl req -new -config etc/signing-ca.conf -key $(signing_key) -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(signing_crt): $(signing_csr)
-	openssl ca -config etc/root-ca.conf -in $(signing_csr) -extensions signing_ca_ext -passin "pass:$(PKI_ROOT_PASSWD)" -out $@
+	openssl ca -config etc/root-ca.conf -in $(signing_csr) -extensions signing_ca_ext -passin pass:$(PKI_ROOT_PASSWD) -out $@
 
 pki-signing-db: $(signing_db) $(signing_crl)
 
@@ -110,16 +111,16 @@ server_pem := certs/$(TLS_CN).pem
 server_ca := certs/$(TLS_CN).ca
 
 $(server_key):
-	openssl genpkey -algorithm $(pkey_algorithm) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-128-cbc -pass pass:$(PKI_SERVER_PASSWD) -out $@
 
 $(server_csr): $(server_key)
-	openssl req -new -config etc/server.conf -key $(server_key) -passout "pass:$(PKI_SERVER_PASSWD)" -out $@
+	openssl req -new -config etc/server.conf -key $(server_key) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
 $(server_crt): $(server_csr)
-	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin "pass:$(PKI_SIGNING_PASSWD)" -out $@
+	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(server_p12): $(server_key)
-	openssl pkcs12 -inkey $(server_key) -in $(server_crt) -name $(TLS_CN) -export -nodes -passout 'pass:$(PKI_SERVER_PASSWD)' -passin 'pass:$(PKI_SERVER_PASSWD)' -out $@
+	openssl pkcs12 -inkey $(server_key) -in $(server_crt) -name $(TLS_CN) -export -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
 $(server_pem): $(server_crt)
 	cat $(server_key) $(server_crt) > $@
@@ -159,4 +160,8 @@ endif
 
 ifndef PKI_SERVER_PASSWD
 $(error | PKI_SERVER_PASSWD is not defined |)
+endif
+
+ifeq ($(shell which openssl),)
+$(error Missing command 'openssl'. https://www.openssl.org/)
 endif
