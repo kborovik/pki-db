@@ -90,7 +90,7 @@ $(signing_key):
 $(signing_csr): $(signing_key)
 	openssl req -new -config etc/signing-ca.conf -key $(signing_key) -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
-$(signing_crt): $(signing_csr)
+$(signing_crt): $(root_crt) $(signing_csr)
 	openssl ca -config etc/root-ca.conf -in $(signing_csr) -extensions signing_ca_ext -passin pass:$(PKI_ROOT_PASSWD) -out $@
 
 pki-signing-db: $(signing_db) $(signing_crl)
@@ -116,19 +116,19 @@ $(server_key):
 $(server_csr): $(server_key)
 	openssl req -new -config etc/server.conf -key $(server_key) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
-$(server_crt): $(server_csr)
+$(server_crt): $(signing_crt) $(server_csr)
 	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
-$(server_p12): $(server_key)
+$(server_p12): $(server_key) $(server_crt)
 	openssl pkcs12 -inkey $(server_key) -in $(server_crt) -name $(TLS_CN) -export -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
-$(server_pem): $(server_crt)
+$(server_pem): $(server_key) $(server_crt)
 	cat $(server_key) $(server_crt) > $@
 
 $(server_ca): $(root_crt) $(signing_crt)
 	cat $(root_crt) $(signing_crt) > $@
 
-pki-server-crt: $(signing_crt) $(server_crt) $(server_p12) $(server_pem) $(server_ca)
+pki-server-crt: $(server_crt) $(server_p12) $(server_pem) $(server_ca)
 
 pki-server-csr-info:
 	openssl req -text -noout -in $(server_csr)
