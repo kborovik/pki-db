@@ -9,6 +9,8 @@ PKI_ROOT_PASSWD ?= $(shell pass pki/lab5/root-ca-key-passwd)
 PKI_SIGNING_PASSWD ?= $(shell pass pki/lab5/signing-ca-key-passwd)
 PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 
+pkey_algorithm ?= RSA # Valid algorithm names for private key generation are RSA, RSA-PSS, EC, X25519, X448, ED25519 and ED448
+
 settings:
 	echo "######################################################################"
 	echo "#"
@@ -36,42 +38,6 @@ $(dirs):
 	mkdir -p $@
 
 ###############################################################################
-# Servers PKI
-###############################################################################
-server_key := certs/$(TLS_CN).key
-server_csr := certs/$(TLS_CN).csr
-server_crt := certs/$(TLS_CN).crt
-server_p12 := certs/$(TLS_CN).p12
-server_pem := certs/$(TLS_CN).pem
-server_ca := certs/$(TLS_CN).ca
-
-$(server_csr): 
-	openssl req -new -config etc/server.conf -out $(server_csr) -keyout $(server_key) -passout "pass:$(PKI_SERVER_PASSWD)"
-
-$(server_crt): $(server_csr)
-	openssl ca -config etc/signing-ca.conf -in $(server_csr) -out $(server_crt) -extensions server_ext -passin "pass:$(PKI_SIGNING_PASSWD)"
-
-$(server_p12): $(server_key)
-	openssl pkcs12 -inkey $(server_key) -in $(server_crt) -name $(TLS_CN) -export -nodes -passout 'pass:$(PKI_SERVER_PASSWD)' -passin 'pass:$(PKI_SERVER_PASSWD)' -out $(server_p12)
-
-$(server_pem): $(server_crt)
-	cat $(server_key) $(server_crt) > $(server_pem)
-
-$(server_ca): $(root_crt) $(signing_crt)
-	cat $(root_crt) $(signing_crt) > $(server_ca)
-
-pki-server-crt: $(signing_crt) $(server_crt) $(server_p12) $(server_pem) $(server_ca)
-
-pki-server-csr-info:
-	openssl req -text -noout -in $(server_csr)
-
-pki-server-crt-info:
-	openssl x509 -text -noout -in $(server_crt)
-
-pki-server-p12-info:
-	openssl pkcs12 -info -nodes -in $(server_p12) -passin 'pass:$(PKI_SERVER_PASSWD)'
-
-###############################################################################
 # Root PKI
 ###############################################################################
 root_db := ca/root-ca/db/root-ca.db ca/root-ca/db/root-ca.db.attr
@@ -86,11 +52,14 @@ $(root_db): $(dirs)
 $(root_crl): $(dirs)
 	echo 01 > $@
 
-$(root_key) $(root_csr):
-	openssl req -new -config etc/root-ca.conf -out $(root_csr) -keyout $(root_key) -passout "pass:$(PKI_ROOT_PASSWD)"
+$(root_key):
+	openssl genpkey -algorithm $(pkey_algorithm) -out $@
+
+$(root_csr): $(root_key)
+	openssl req -new -config etc/root-ca.conf -key $(root_key) -passout "pass:$(PKI_ROOT_PASSWD)" -out $@
 
 $(root_crt): $(root_csr)
-	openssl ca -selfsign -config etc/root-ca.conf -in $(root_csr) -out $(root_crt) -extensions root_ca_ext -passin "pass:$(PKI_ROOT_PASSWD)"
+	openssl ca -selfsign -config etc/root-ca.conf -in $(root_csr) -extensions root_ca_ext -passin "pass:$(PKI_ROOT_PASSWD)" -out $@
 
 pki-root-db: $(root_db) $(root_crl)
 
@@ -114,11 +83,14 @@ $(signing_db): $(dirs)
 $(signing_crl): $(dirs)
 	echo 01 > $@
 
-$(signing_key) $(signing_csr):
-	openssl req -new -config etc/signing-ca.conf -out $(signing_csr) -keyout $(signing_key) -passout "pass:$(PKI_SIGNING_PASSWD)"
+$(signing_key):
+	openssl genpkey -algorithm $(pkey_algorithm) -out $@
+
+$(signing_csr): $(signing_key)
+	openssl req -new -config etc/signing-ca.conf -key $(signing_key) -passout "pass:$(PKI_SIGNING_PASSWD)" -out $@
 
 $(signing_crt): $(signing_csr)
-	openssl ca -config etc/root-ca.conf -in $(signing_csr) -out $(signing_crt) -extensions signing_ca_ext -passin "pass:$(PKI_ROOT_PASSWD)"
+	openssl ca -config etc/root-ca.conf -in $(signing_csr) -extensions signing_ca_ext -passin "pass:$(PKI_ROOT_PASSWD)" -out $@
 
 pki-signing-db: $(signing_db) $(signing_crl)
 
@@ -126,6 +98,45 @@ pki-signing-crt: $(root_crt) $(signing_crt)
 
 pki-signing-crt-info:
 	openssl x509 -text -noout -in $(signing_crt)
+
+###############################################################################
+# Servers PKI
+###############################################################################
+server_key := certs/$(TLS_CN).key
+server_csr := certs/$(TLS_CN).csr
+server_crt := certs/$(TLS_CN).crt
+server_p12 := certs/$(TLS_CN).p12
+server_pem := certs/$(TLS_CN).pem
+server_ca := certs/$(TLS_CN).ca
+
+$(server_key):
+	openssl genpkey -algorithm $(pkey_algorithm) -out $@
+
+$(server_csr): $(server_key)
+	openssl req -new -config etc/server.conf -key $(server_key) -passout "pass:$(PKI_SERVER_PASSWD)" -out $@
+
+$(server_crt): $(server_csr)
+	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin "pass:$(PKI_SIGNING_PASSWD)" -out $@
+
+$(server_p12): $(server_key)
+	openssl pkcs12 -inkey $(server_key) -in $(server_crt) -name $(TLS_CN) -export -nodes -passout 'pass:$(PKI_SERVER_PASSWD)' -passin 'pass:$(PKI_SERVER_PASSWD)' -out $@
+
+$(server_pem): $(server_crt)
+	cat $(server_key) $(server_crt) > $@
+
+$(server_ca): $(root_crt) $(signing_crt)
+	cat $(root_crt) $(signing_crt) > $@
+
+pki-server-crt: $(signing_crt) $(server_crt) $(server_p12) $(server_pem) $(server_ca)
+
+pki-server-csr-info:
+	openssl req -text -noout -in $(server_csr)
+
+pki-server-crt-info:
+	openssl x509 -text -noout -in $(server_crt)
+
+pki-server-p12-info:
+	openssl pkcs12 -info -nodes -in $(server_p12) -passin 'pass:$(PKI_SERVER_PASSWD)'
 
 ###############################################################################
 # Errors Check
