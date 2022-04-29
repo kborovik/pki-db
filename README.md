@@ -29,8 +29,6 @@ By default, all private keys are encrypted with a password. To decrypt run:
 - Run `make all`
 - Run `git init && git add --all && git commit -m 'initial commit'` (optional)
 
-# Example
-
 ## Create New Certificate
 
 ```
