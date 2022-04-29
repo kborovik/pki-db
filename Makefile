@@ -10,7 +10,7 @@ PKI_SIGNING_PASSWD ?= $(shell pass pki/lab5/signing-ca-key-passwd)
 PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, EC, X25519, X448, ED25519 and ED448
-pkey_algorithm ?= RSA
+pkey_algorithm ?= RSA-PSS
 
 settings:
 	echo "######################################################################"
@@ -26,7 +26,7 @@ settings:
 ###############################################################################
 all: pki-root-crt pki-signing-crt pki-server-crt
 
-clean: pki-clean pki-db
+clean: prompt pki-clean pki-db
 
 pki-db: pki-root-db pki-signing-db
 
@@ -165,3 +165,14 @@ endif
 ifeq ($(shell which openssl),)
 $(error Missing command 'openssl'. https://www.openssl.org/)
 endif
+
+prompt:
+	echo "######################################################################"
+	echo "# WARRNING! - All TLS private keys will be destroyed!"
+	echo "######################################################################"
+	echo
+	read -p "Continue destruction? (yes/no): " INP
+	if [ "$${INP}" != "yes" ]; then 
+	  echo "Deployment aborted"
+	  exit 100
+	fi
