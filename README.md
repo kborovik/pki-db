@@ -1,19 +1,25 @@
 # About
 
-This repository helps to implement TLS PKIs with the OpenSSL toolkit.
+This repository helps manage TLS Certificates (PKI) with the OpenSSL toolkit in DEV/TEST environments to mimic external (PROD) X.509 PKI.
 
-The repository is abased on the excellent work of "OpenSSL PKI Tutorial" team.
+The repository is based on the excellent work of the "OpenSSL PKI Tutorial" team.
 
 https://pki-tutorial.readthedocs.io/en/latest/index.html
 
 # How to Use
 
+By default, all private keys are encrypted with a password. To decrypt run:
+
+```
+→ openssl pkey -in certs/vault.lab5.ca.key -passin pass:TinyPassword
+```
+
 ## Create New PKI
 
-- Checkout repository
-- Run `rm -rf .git`
-- Run `make clean`
-- Update DN information in `etc/root-ca.conf`, `etc/signing-ca.conf`, `etc/server.conf`
+- Checkout this repository
+- Run `rm -rf .git` (optional)
+- Run `make clean` to remove RootCA and certificates
+- Update `[ ca_dn ]` information in `etc/root-ca.conf`, `etc/signing-ca.conf`, `etc/server.conf`.
 - Set:
   - `export TLS_CN=vault.lab5.ca` (CommonName)
   - `export TLS_SAN=DNS:vault.lab5.ca,IP:10.0.0.2` (subjectAltName)
@@ -21,7 +27,7 @@ https://pki-tutorial.readthedocs.io/en/latest/index.html
   - `export PKI_SIGNING_PASSWD=SmallPassword`
   - `export PKI_SERVER_PASSWD=TinyPassword`
 - Run `make all`
-- Run `git init && git add --all && git commit -m 'initial commit'`
+- Run `git init && git add --all && git commit -m 'initial commit'` (optional)
 
 # Example
 
