@@ -2,8 +2,8 @@
 .SILENT:
 .EXPORT_ALL_VARIABLES:
 
-TLS_CN ?=
-TLS_SAN ?=
+PKI_CN ?=
+PKI_SAN ?=
 
 PKI_ROOT_PASSWD ?= $(shell pass pki/lab5/root-ca-key-passwd)
 PKI_SIGNING_PASSWD ?= $(shell pass pki/lab5/signing-ca-key-passwd)
@@ -16,8 +16,8 @@ settings:
 	echo "######################################################################"
 	echo "#"
 	echo "# Settings:"
-	echo "# - TLS_CN  = $(TLS_CN)"
-	echo "# - TLS_SAN = $(TLS_SAN)"
+	echo "# - PKI_CN  = $(PKI_CN)"
+	echo "# - PKI_SAN = $(PKI_SAN)"
 	echo "#"
 	echo "######################################################################"
 
@@ -104,11 +104,11 @@ pki-signing-crt-info:
 # Servers PKI
 ###############################################################################
 root_ca    := certs/rootCA.pem
-server_key := certs/$(TLS_CN).key
-server_csr := certs/$(TLS_CN).csr
-server_crt := certs/$(TLS_CN).crt
-server_p12 := certs/$(TLS_CN).p12
-server_pem := certs/$(TLS_CN).pem
+server_key := certs/$(PKI_CN).key
+server_csr := certs/$(PKI_CN).csr
+server_crt := certs/$(PKI_CN).crt
+server_p12 := certs/$(PKI_CN).p12
+server_pem := certs/$(PKI_CN).pem
 
 $(root_ca): $(root_crt) $(signing_crt)
 	cat $(root_crt) $(signing_crt) > $@
@@ -123,7 +123,7 @@ $(server_crt): $(signing_crt) $(server_csr)
 	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
-	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -certfile $(root_ca) -name $(TLS_CN) -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
+	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -certfile $(root_ca) -name $(PKI_CN) -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
 $(server_pem): $(server_key) $(server_crt)
 	cat $(server_key) $(server_crt) > $@
@@ -145,12 +145,12 @@ pki-server-p12-info:
 ###############################################################################
 # Errors Check
 ###############################################################################
-ifndef TLS_CN
-$(error | Define TLS_CN: export TLS_CN=pki.lab5.ca |)
+ifndef PKI_CN
+$(error | Define PKI_CN: export PKI_CN=pki.lab5.ca |)
 endif
 
-ifndef TLS_SAN
-$(error | Define TLS_CN: export TLS_SAN=DNS:pki.lab5.ca,DNS:pki-dev.lab5.ca,IP:10.0.0.1 |)
+ifndef PKI_SAN
+$(error | Define PKI_CN: export PKI_SAN=DNS:pki.lab5.ca,DNS:pki-dev.lab5.ca,IP:10.0.0.1 |)
 endif
 
 ifndef PKI_ROOT_PASSWD
