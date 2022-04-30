@@ -103,7 +103,7 @@ pki-signing-crt-info:
 ###############################################################################
 # Servers PKI
 ###############################################################################
-root_ca    := certs/$(TLS_CN).ca
+root_ca    := certs/rootCA.pem
 server_key := certs/$(TLS_CN).key
 server_csr := certs/$(TLS_CN).csr
 server_crt := certs/$(TLS_CN).crt
@@ -123,12 +123,15 @@ $(server_crt): $(signing_crt) $(server_csr)
 	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
-	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -certfile $(root_ca) -name $(TLS_CN) -aes128 -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
+	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -certfile $(root_ca) -name $(TLS_CN) -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
 $(server_pem): $(server_key) $(server_crt)
 	cat $(server_key) $(server_crt) > $@
 
 pki-server-crt: $(server_crt) $(server_p12) $(server_pem) $(root_ca)
+
+pki-server-key-info:
+	openssl pkey -in $(server_key) -passin pass:$(PKI_SERVER_PASSWD)
 
 pki-server-csr-info:
 	openssl req -text -noout -in $(server_csr)
