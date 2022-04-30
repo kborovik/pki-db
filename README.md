@@ -10,7 +10,7 @@ https://pki-tutorial.readthedocs.io/en/latest/index.html
 
 ## Create New Certificate
 
-Create server certificate template.
+**create server certificate template**
 
 ```
 → cat env/vault.lab5.ca
@@ -20,14 +20,14 @@ export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
 → source env/vault.lab5.ca
 ```
 
-or export directly
+**or export directly**
 
 ```
 → export PKI_CN=vault.lab5.ca
 → export PKI_SAN=DNS:vault.lab5.ca,IP:10.0.0.2
 ```
 
-check settings
+**check settings**
 
 ```
 → make
@@ -40,7 +40,7 @@ check settings
 ######################################################################
 ```
 
-make certificate
+**create certificate**
 
 ```
 → make all
@@ -67,13 +67,13 @@ PKI_SIGNING_PASSWD ?= $(shell pass pki/lab5/signing-ca-key-passwd)
 PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 ```
 
-**Decrypt**
+**decrypt**
 
 ```
 → openssl pkey -in certs/vault.lab5.ca.key -passin pass:TinyPassword
 ```
 
-or
+**or with make**
 
 ```
 → make pki-server-key-info
