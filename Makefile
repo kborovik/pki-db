@@ -127,16 +127,16 @@ $(server_p12): $(server_key) $(server_crt) $(root_ca)
 
 pki-server-crt: $(server_crt) $(server_p12) $(root_ca)
 
-pki-server-key-info:
+pki-key-info:
 	openssl pkey -in $(server_key) -passin pass:$(PKI_SERVER_PASSWD)
 
-pki-server-csr-info:
+pki-csr-info:
 	openssl req -text -noout -in $(server_csr)
 
-pki-server-crt-info:
+pki-crt-info:
 	openssl x509 -text -noout -in $(server_crt)
 
-pki-server-p12-info:
+pki-p12-info:
 	openssl pkcs12 -nodes -info -in $(server_p12) -passin 'pass:$(PKI_SERVER_PASSWD)'
 
 ###############################################################################
