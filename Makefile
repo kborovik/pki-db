@@ -12,7 +12,7 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA-PSS
 
-settings:
+pki-settings:
 	echo "######################################################################"
 	echo "#"
 	echo "# Settings:"
@@ -26,9 +26,7 @@ settings:
 ###############################################################################
 all: pki-root-crt pki-signing-crt pki-server-crt
 
-clean: prompt pki-clean pki-db
-
-pki-db: pki-root-db pki-signing-db
+pki-new: pki-prompt pki-clean pki-root-db pki-signing-db
 
 pki-clean:
 	-rm -rf ca crl certs
@@ -66,9 +64,6 @@ pki-root-db: $(root_db) $(root_crl)
 
 pki-root-crt: $(root_crt)
 
-pki-root-crt-info:
-	openssl x509 -text -noout -in $(root_crt)
-
 ###############################################################################
 # Signing PKI
 ###############################################################################
@@ -97,9 +92,6 @@ pki-signing-db: $(signing_db) $(signing_crl)
 
 pki-signing-crt: $(root_crt) $(signing_crt)
 
-pki-signing-crt-info:
-	openssl x509 -text -noout -in $(signing_crt)
-
 ###############################################################################
 # Servers PKI
 ###############################################################################
@@ -123,20 +115,20 @@ $(server_crt): $(signing_crt) $(server_csr)
 	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
-	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -certfile $(root_ca) -name $(PKI_CN) -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
+	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(PKI_CN) -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
 pki-server-crt: $(server_crt) $(server_p12) $(root_ca)
 
-pki-key-info:
+pki-show-key:
 	openssl pkey -in $(server_key) -passin pass:$(PKI_SERVER_PASSWD)
 
-pki-csr-info:
+pki-show-csr:
 	openssl req -text -noout -in $(server_csr)
 
-pki-crt-info:
+pki-show-crt:
 	openssl x509 -text -noout -in $(server_crt)
 
-pki-p12-info:
+pki-show-p12:
 	openssl pkcs12 -nodes -info -in $(server_p12) -passin 'pass:$(PKI_SERVER_PASSWD)'
 
 ###############################################################################
@@ -166,7 +158,7 @@ ifeq ($(shell which openssl),)
 $(error Missing command 'openssl'. https://www.openssl.org/)
 endif
 
-prompt:
+pki-prompt:
 	echo "######################################################################"
 	echo "# WARRNING! - All TLS private keys will be destroyed!"
 	echo "######################################################################"

@@ -51,10 +51,9 @@ certs/
 ├── vault.lab5.ca.crt
 ├── vault.lab5.ca.csr
 ├── vault.lab5.ca.key
-├── vault.lab5.ca.p12
-└── vault.lab5.ca.pem
+└── vault.lab5.ca.p12
 
-0 directories, 6 files
+0 directories, 5 files
 ```
 
 ## Manage Private Key Passwords
@@ -76,14 +75,14 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 **or with make**
 
 ```
-→ make pki-server-key-info
+→ make pki-show-key
 ```
 
 ## Create New PKI
 
 - Checkout this repository
 - Run `rm -rf .git` (optional)
-- Run `make clean` to remove RootCA and certificates
+- Run `make pki-new` to remove RootCA and certificates
 - Update `[ ca_dn ]` information in `etc/root-ca.conf`, `etc/signing-ca.conf`, `etc/server.conf`.
 - Set:
   - `export PKI_CN=vault.lab5.ca` (CommonName)
