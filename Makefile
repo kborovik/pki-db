@@ -28,7 +28,7 @@ all: pki-root-crt pki-signing-crt pki-server-crt
 
 pki-new: pki-prompt pki-clean pki-root-db pki-signing-db
 
-pki-clean:
+pki-clean: pki-prompt
 	-rm -rf ca crl certs
 
 dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db crl certs
