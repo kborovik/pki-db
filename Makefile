@@ -125,10 +125,7 @@ $(server_crt): $(signing_crt) $(server_csr)
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
 	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -certfile $(root_ca) -name $(PKI_CN) -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
-$(server_pem): $(server_key) $(server_crt)
-	cat $(server_key) $(server_crt) > $@
-
-pki-server-crt: $(server_crt) $(server_p12) $(server_pem) $(root_ca)
+pki-server-crt: $(server_crt) $(server_p12) $(root_ca)
 
 pki-server-key-info:
 	openssl pkey -in $(server_key) -passin pass:$(PKI_SERVER_PASSWD)
