@@ -95,7 +95,7 @@ pki-signing-crt: $(root_crt) $(signing_crt)
 ###############################################################################
 # Servers PKI
 ###############################################################################
-root_ca    := certs/rootCA.pem
+root_ca    := certs/certificate-authority.crt
 server_key := certs/$(PKI_CN).key
 server_csr := certs/$(PKI_CN).csr
 server_crt := certs/$(PKI_CN).crt

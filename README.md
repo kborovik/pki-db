@@ -47,7 +47,7 @@ export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
 →
 → tree certs/
 certs/
-├── rootCA.pem
+├── certificate-authority.crt
 ├── vault.lab5.ca.crt
 ├── vault.lab5.ca.csr
 ├── vault.lab5.ca.key
