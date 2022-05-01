@@ -10,7 +10,7 @@ PKI_SIGNING_PASSWD ?= $(shell pass pki/lab5/signing-ca-key-passwd)
 PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
-pkey_algorithm ?= RSA-PSS
+pkey_algorithm ?= RSA
 
 pki-settings:
 	echo "######################################################################"
