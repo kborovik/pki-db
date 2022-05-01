@@ -1,2 +1,2 @@
-V	320430132258Z		01	unknown	/DC=ca/DC=lab5/O=Lab5 DevOps Inc./OU=DevOps/CN=RootCA G0 SelfSigned
-V	320430132302Z		02	unknown	/DC=ca/DC=lab5/O=Lab5 DevOps Inc./OU=DevOps/CN=SigningCA G1
+V	320430143952Z		01	unknown	/DC=ca/DC=lab5/O=Lab5 DevOps Inc./OU=www.lab5.ca/CN=RootCA G0 SelfSigned
+V	320430144010Z		02	unknown	/DC=ca/DC=lab5/O=Lab5 DevOps Inc./OU=www.lab5.ca/CN=SigningCA G1
