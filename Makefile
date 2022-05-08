@@ -2,6 +2,8 @@
 .SILENT:
 .EXPORT_ALL_VARIABLES:
 
+SELL := /bin/bash
+
 PKI_CN ?=
 PKI_SAN ?=
 
@@ -12,7 +14,7 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
 
-pki-settings:
+settings:
 	echo "######################################################################"
 	echo "#"
 	echo "# Settings:"
@@ -24,11 +26,11 @@ pki-settings:
 ###############################################################################
 # General PKI
 ###############################################################################
-all: pki-root-crt pki-signing-crt pki-server-crt
+all: root-crt signing-crt server-crt
 
-pki-new: pki-prompt pki-clean pki-root-db pki-signing-db
+new: prompt clean root-db signing-db
 
-pki-clean: pki-prompt
+clean: prompt
 	-rm -rf ca crl certs
 
 dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db crl certs
@@ -60,9 +62,9 @@ $(root_csr): $(root_key)
 $(root_crt): $(root_csr)
 	openssl ca -selfsign -config etc/root-ca.conf -in $(root_csr) -extensions root_ca_ext -passin pass:$(PKI_ROOT_PASSWD) -out $@
 
-pki-root-db: $(root_db) $(root_crl)
+root-db: $(root_db) $(root_crl)
 
-pki-root-crt: $(root_crt)
+root-crt: $(root_crt)
 
 ###############################################################################
 # Signing PKI
@@ -88,14 +90,14 @@ $(signing_csr): $(signing_key)
 $(signing_crt): $(root_crt) $(signing_csr)
 	openssl ca -config etc/root-ca.conf -in $(signing_csr) -extensions signing_ca_ext -passin pass:$(PKI_ROOT_PASSWD) -out $@
 
-pki-signing-db: $(signing_db) $(signing_crl)
+signing-db: $(signing_db) $(signing_crl)
 
-pki-signing-crt: $(root_crt) $(signing_crt)
+signing-crt: $(root_crt) $(signing_crt)
 
 ###############################################################################
 # Servers PKI
 ###############################################################################
-root_ca    := certs/certificate-authority.crt
+root_ca    := certs/ca-certificates.crt
 server_key := certs/$(PKI_CN).key
 server_csr := certs/$(PKI_CN).csr
 server_crt := certs/$(PKI_CN).crt
@@ -117,23 +119,34 @@ $(server_crt): $(signing_crt) $(server_csr)
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
 	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(PKI_CN) -nodes -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
-pki-server-crt: $(server_crt) $(server_p12) $(root_ca)
+server-crt: $(server_crt) $(server_p12) $(root_ca)
 
-pki-show-key:
+show-key:
 	openssl pkey -in $(server_key) -passin pass:$(PKI_SERVER_PASSWD)
 
-pki-show-csr:
+show-csr:
 	openssl req -text -noout -in $(server_csr)
 
-pki-show-crt:
+show-crt:
 	openssl x509 -text -noout -in $(server_crt)
 
-pki-show-p12:
+show-p12:
 	openssl pkcs12 -nodes -info -in $(server_p12) -passin 'pass:$(PKI_SERVER_PASSWD)'
 
 ###############################################################################
 # Errors Check
 ###############################################################################
+prompt:
+	echo "######################################################################"
+	echo "# WARRNING! - All TLS private keys will be destroyed!"
+	echo "######################################################################"
+	echo
+	read -p "Continue destruction? (yes/no): " INP
+	if [ "$${INP}" != "yes" ]; then 
+	  echo "Deployment aborted"
+	  exit 100
+	fi
+
 ifndef PKI_CN
 $(error | Define PKI_CN: export PKI_CN=pki.lab5.ca |)
 endif
@@ -157,14 +170,3 @@ endif
 ifeq ($(shell which openssl),)
 $(error Missing command 'openssl'. https://www.openssl.org/)
 endif
-
-pki-prompt:
-	echo "######################################################################"
-	echo "# WARRNING! - All TLS private keys will be destroyed!"
-	echo "######################################################################"
-	echo
-	read -p "Continue destruction? (yes/no): " INP
-	if [ "$${INP}" != "yes" ]; then 
-	  echo "Deployment aborted"
-	  exit 100
-	fi

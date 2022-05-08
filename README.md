@@ -47,7 +47,7 @@ export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
 →
 → tree certs/
 certs/
-├── certificate-authority.crt
+├── ca-certificates.crt
 ├── vault.lab5.ca.crt
 ├── vault.lab5.ca.csr
 ├── vault.lab5.ca.key
@@ -75,14 +75,16 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 **or with make**
 
 ```
-→ make pki-show-key
+→ make show-key
 ```
 
 ## Create New PKI
 
+### Steps
+
 - Checkout this repository
 - Run `rm -rf .git` (optional)
-- Run `make pki-new` to remove RootCA and certificates
+- Run `make new` to remove RootCA and certificates
 - Update `[ ca_dn ]` information in `etc/root-ca.conf`, `etc/signing-ca.conf`, `etc/server.conf`.
 - Set:
   - `export PKI_CN=vault.lab5.ca` (CommonName)
@@ -92,3 +94,7 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
   - `export PKI_SERVER_PASSWD=TinyPassword`
 - Run `make all`
 - Run `git init && git add --all && git commit -m 'initial commit'` (optional)
+
+### Private Key Algorithm
+
+The TLS certificate private key algorithm can be changed from the default `RSA` to `RSA-PSS`, `ED25519`, `ED448` by setting `export pkey_algorithm := ED25519` or updating `pkey_algorithm` in Makefile. (`ED25519` and `ED448` requires OpenSSL 1.1.1 and higher)
