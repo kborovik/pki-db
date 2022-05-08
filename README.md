@@ -166,9 +166,17 @@ Continue destruction? (yes/no): yes
 ```
 → git init
 → git add --all
-→ git commit -m 'new pki-db lab5.ca'
+→ git commit -m 'new pki-db host.com'
 ```
 
 ### Private Key Algorithm
 
-The TLS certificate private key algorithm can be changed from the default `RSA` to `RSA-PSS`, `ED25519`, `ED448` by setting `export pkey_algorithm := ED25519` or updating `pkey_algorithm` in Makefile. (`ED25519` and `ED448` requires OpenSSL 1.1.1 and higher)
+The TLS certificate private key algorithm can be changed from the default `RSA` to `RSA-PSS`, `ED25519`, `ED448` by setting
+
+```
+export pkey_algorithm=ED25519
+```
+
+or updating `pkey_algorithm` in Makefile
+
+Note: `ED25519` and `ED448` requires OpenSSL 1.1.1 and higher
