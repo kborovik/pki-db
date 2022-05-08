@@ -16,7 +16,9 @@ https://pki-tutorial.readthedocs.io/en/latest/index.html
 → cat env/vault.lab5.ca
 export PKI_CN=vault.lab5.ca
 export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
-→
+```
+
+```
 → source env/vault.lab5.ca
 ```
 
@@ -31,6 +33,9 @@ export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
 
 ```
 → make
+```
+
+```
 ######################################################################
 #
 # Settings:
@@ -44,7 +49,9 @@ export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
 
 ```
 → make all
-→
+```
+
+```
 → tree certs/
 certs/
 ├── ca-certificates.crt
@@ -82,18 +89,60 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 
 ### Steps
 
-- Checkout this repository
-- Run `rm -rf .git` (optional)
-- Run `make new` to remove RootCA and certificates
-- Update `[ ca_dn ]` information in `etc/root-ca.conf`, `etc/signing-ca.conf`, `etc/server.conf`.
-- Set:
-  - `export PKI_CN=vault.lab5.ca` (CommonName)
-  - `export PKI_SAN=DNS:vault.lab5.ca,IP:10.0.0.2` (subjectAltName)
-  - `export PKI_ROOT_PASSWD=BigPassword`
-  - `export PKI_SIGNING_PASSWD=SmallPassword`
-  - `export PKI_SERVER_PASSWD=TinyPassword`
-- Run `make all`
-- Run `git init && git add --all && git commit -m 'initial commit'` (optional)
+- Clone this repository
+
+```
+→ git clone https://github.com/kborovik/pki-db.git
+```
+
+- Remove Git folder
+
+```
+→ rm -rf .git
+```
+
+- Set PKI passwords (or in Makefile)
+
+```
+→ export PKI_ROOT_PASSWD=BigPassword
+→ export PKI_SIGNING_PASSWD=SmallPassword
+→ export PKI_SERVER_PASSWD=TinyPassword
+```
+
+- Update `[ ca_dn ]` information
+
+```
+→ vim etc/root-ca.conf
+→ vim etc/signing-ca.conf
+→ vim etc/server.conf
+```
+
+- Create new PKI DB
+
+```
+→ make new
+```
+
+- Create first `CommonName` and `subjectAltName`
+
+```
+→ export PKI_CN=vault.lab5.ca
+→ export PKI_SAN=DNS:vault.lab5.ca,IP:10.0.0.2
+```
+
+- Create certificate
+
+```
+→ make all
+```
+
+- Create new Git repository
+
+```
+→ git init
+→ git add --all
+→ git commit -m 'new pki-db lab5.ca'
+```
 
 ### Private Key Algorithm
 
