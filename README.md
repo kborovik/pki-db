@@ -13,7 +13,12 @@ https://pki-tutorial.readthedocs.io/en/latest/index.html
 **create server certificate template**
 
 ```
+→ vim env/vault.lab5.ca
+```
+
+```
 → cat env/vault.lab5.ca
+
 export PKI_CN=vault.lab5.ca
 export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
 ```
@@ -123,7 +128,13 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 → make new
 ```
 
-- Create first `CommonName` and `subjectAltName`
+- Create certificate template (`CommonName` and `subjectAltName`)
+
+```
+→ vim env/vault.lab5.ca
+```
+
+or
 
 ```
 → export PKI_CN=vault.lab5.ca
