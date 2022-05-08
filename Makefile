@@ -138,7 +138,7 @@ show-p12:
 ###############################################################################
 prompt:
 	echo "######################################################################"
-	echo "# WARRNING! - All TLS private keys will be destroyed!"
+	echo "# WARNING! - All TLS private keys will be destroyed!"
 	echo "######################################################################"
 	echo
 	read -p "Continue destruction? (yes/no): " INP

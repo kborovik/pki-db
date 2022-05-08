@@ -100,10 +100,17 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 → git clone https://github.com/kborovik/pki-db.git
 ```
 
-- Remove Git folder
+- Remove old and create new PKI DB
 
 ```
-→ rm -rf .git
+→ make new
+
+######################################################################
+# WARNING! - All TLS private keys will be destroyed!
+######################################################################
+
+Continue destruction? (yes/no): yes
+
 ```
 
 - Set PKI passwords (or in Makefile)
@@ -122,29 +129,36 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 → vim etc/server.conf
 ```
 
-- Create new PKI DB
-
-```
-→ make new
-```
-
 - Create certificate template (`CommonName` and `subjectAltName`)
 
 ```
-→ vim env/vault.lab5.ca
+→ cp env/vault.lab5.ca env/new.host.com
 ```
 
-or
-
 ```
-→ export PKI_CN=vault.lab5.ca
-→ export PKI_SAN=DNS:vault.lab5.ca,IP:10.0.0.2
+→ vim env/new.host.com
 ```
 
-- Create certificate
+```
+→ source env/new.host.com
+```
+
+- Check settings
+
+```
+→ make
+```
+
+- Create new Root, Signing and Host certificate
 
 ```
 → make all
+```
+
+- Remove old Git repository
+
+```
+→ rm -rf .git
 ```
 
 - Create new Git repository
