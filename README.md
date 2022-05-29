@@ -1,4 +1,4 @@
-# About
+# TLS PKI for DevOps
 
 This repository helps manage TLS Certificates (PKI) with the OpenSSL toolkit in DEV/TEST environments to mimic external (PROD) X.509 PKI.
 
@@ -8,36 +8,54 @@ https://pki-tutorial.readthedocs.io/en/latest/index.html
 
 # How to Use
 
+# Master Key
+
+```
+mkdir -p ~/.secrets/pki
+```
+
+```
+echo "VeryBigPassword" > ~/.secrets/pki/PKI_ROOT_PASSWD
+```
+
+```
+echo "SimplyBigPassword" > ~/.secrets/pki/PKI_SIGNING_PASSWD
+```
+
+```
+echo "EasySmallPassword" > ~/.secrets/pki/PKI_SERVER_PASSWD
+```
+
 ## Create New Certificate
 
 **create server certificate template**
 
 ```
-→ vim env/vault.lab5.ca
+vim env/vault.lab5.ca
 ```
 
 ```
-→ cat env/vault.lab5.ca
+cat env/vault.lab5.ca
 
 export PKI_CN=vault.lab5.ca
 export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
 ```
 
 ```
-→ source env/vault.lab5.ca
+source env/vault.lab5.ca
 ```
 
 **or export directly**
 
 ```
-→ export PKI_CN=vault.lab5.ca
-→ export PKI_SAN=DNS:vault.lab5.ca,IP:10.0.0.2
+export PKI_CN=vault.lab5.ca
+export PKI_SAN=DNS:vault.lab5.ca,IP:10.0.0.2
 ```
 
 **check settings**
 
 ```
-→ make
+make
 ```
 
 ```
@@ -53,11 +71,11 @@ export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
 **create certificate**
 
 ```
-→ make all
+make all
 ```
 
 ```
-→ tree certs/
+tree certs/
 certs/
 ├── ca-certificates.crt
 ├── vault.lab5.ca.crt
@@ -81,13 +99,7 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 **decrypt**
 
 ```
-→ openssl pkey -in certs/vault.lab5.ca.key -passin pass:TinyPassword
-```
-
-**or with make**
-
-```
-→ make show-key
+make show-key
 ```
 
 ## Create New PKI
@@ -97,13 +109,13 @@ PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
 - Clone this repository
 
 ```
-→ git clone https://github.com/kborovik/pki-db.git
+git clone https://github.com/kborovik/pki-db.git
 ```
 
 - Remove old and create new PKI DB
 
 ```
-→ make new
+make new
 
 ######################################################################
 # WARNING! - All TLS private keys will be destroyed!
@@ -116,57 +128,57 @@ Continue destruction? (yes/no): yes
 - Set PKI passwords (or in Makefile)
 
 ```
-→ export PKI_ROOT_PASSWD=BigPassword
-→ export PKI_SIGNING_PASSWD=SmallPassword
-→ export PKI_SERVER_PASSWD=TinyPassword
+export PKI_ROOT_PASSWD=BigPassword
+export PKI_SIGNING_PASSWD=SmallPassword
+export PKI_SERVER_PASSWD=TinyPassword
 ```
 
 - Update `[ ca_dn ]` information
 
 ```
-→ vim etc/root-ca.conf
-→ vim etc/signing-ca.conf
-→ vim etc/server.conf
+vim etc/root-ca.conf
+vim etc/signing-ca.conf
+vim etc/server.conf
 ```
 
 - Create certificate template (`CommonName` and `subjectAltName`)
 
 ```
-→ cp env/vault.lab5.ca env/new.host.com
+cp env/vault.lab5.ca env/new.host.com
 ```
 
 ```
-→ vim env/new.host.com
+vim env/new.host.com
 ```
 
 ```
-→ source env/new.host.com
+source env/new.host.com
 ```
 
 - Check settings
 
 ```
-→ make
+make
 ```
 
 - Create new Root, Signing and Host certificate
 
 ```
-→ make all
+make all
 ```
 
 - Remove old Git repository
 
 ```
-→ rm -rf .git
+rm -rf .git
 ```
 
 - Create new Git repository
 
 ```
-→ git init
-→ git add --all
-→ git commit -m 'new pki-db host.com'
+git init
+git add --all
+git commit -m 'new pki-db host.com'
 ```
 
 ### Private Key Algorithm
