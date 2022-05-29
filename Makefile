@@ -7,9 +7,9 @@ SELL := /bin/bash
 PKI_CN ?=
 PKI_SAN ?=
 
-PKI_ROOT_PASSWD ?= $(shell pass pki/lab5/root-ca-key-passwd)
-PKI_SIGNING_PASSWD ?= $(shell pass pki/lab5/signing-ca-key-passwd)
-PKI_SERVER_PASSWD ?= $(shell pass pki/lab5/server-key-passwd)
+PKI_ROOT_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_ROOT_PASSWD))
+PKI_SIGNING_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD))
+PKI_SERVER_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_SERVER_PASSWD))
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
