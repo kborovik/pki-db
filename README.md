@@ -16,7 +16,7 @@ https://pki-tutorial.readthedocs.io/en/latest/index.html
 git clone https://github.com/kborovik/pki-db.git
 ```
 
-- Remove create new PKI DB
+- Create new PKI DB
 
 ```
 make new
