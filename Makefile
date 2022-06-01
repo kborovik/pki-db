@@ -38,6 +38,19 @@ dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db 
 $(dirs):
 	mkdir -p $@
 
+init:
+	touch $(root_key); sleep 1
+	touch $(root_csr); sleep 1
+	touch $(root_crt); sleep 1
+	touch $(signing_key); sleep 1
+	touch $(signing_csr); sleep 1
+	touch $(signing_crt); sleep 1
+	touch $(server_key); sleep 1
+	touch $(server_csr); sleep 1
+	touch $(server_crt); sleep 1
+	touch $(root_ca); sleep 1
+	touch $(server_p12); sleep 1
+
 ###############################################################################
 # Root PKI
 ###############################################################################
@@ -102,7 +115,6 @@ server_key := certs/$(PKI_CN).key
 server_csr := certs/$(PKI_CN).csr
 server_crt := certs/$(PKI_CN).crt
 server_p12 := certs/$(PKI_CN).p12
-server_pem := certs/$(PKI_CN).pem
 
 $(root_ca): $(root_crt) $(signing_crt)
 	cat $(root_crt) $(signing_crt) > $@
