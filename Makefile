@@ -14,7 +14,7 @@ PKI_SERVER_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_SERVER_PASSWD))
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
 
-settings:
+settings: .initialized
 	echo "######################################################################"
 	echo "#"
 	echo "# Settings:"
@@ -26,30 +26,32 @@ settings:
 ###############################################################################
 # General PKI
 ###############################################################################
-all: root-crt signing-crt server-crt
+all: .initialized root-crt signing-crt server-crt
 
 new: prompt clean root-db signing-db
 
 clean: prompt
-	-rm -rf ca crl certs
+	-rm -rf ca crl certs .initialized
 
 dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db crl certs
 
 $(dirs):
 	mkdir -p $@
 
-init:
-	touch $(root_key); sleep 1
-	touch $(root_csr); sleep 1
-	touch $(root_crt); sleep 1
-	touch $(signing_key); sleep 1
-	touch $(signing_csr); sleep 1
-	touch $(signing_crt); sleep 1
-	touch $(server_key); sleep 1
-	touch $(server_csr); sleep 1
-	touch $(server_crt); sleep 1
-	touch $(root_ca); sleep 1
-	touch $(server_p12); sleep 1
+.initialized:
+	$(info # initializing PKI DB)
+	test -f $(root_key) && touch $(root_key) && sleep 1
+	test -f $(root_csr) && touch $(root_csr) && sleep 1
+	test -f $(root_crt) && touch $(root_crt) && sleep 1
+	test -f $(signing_key) && touch $(signing_key) && sleep 1
+	test -f $(signing_csr) && touch $(signing_csr) && sleep 1
+	test -f $(signing_crt) && touch $(signing_crt) && sleep 1
+	test -f $(root_ca) && touch $(root_ca) && sleep 1
+	test -f $(server_key) && touch $(server_key) && sleep 1
+	test -f $(server_csr) && touch $(server_csr) && sleep 1
+	test -f $(server_crt) && touch $(server_crt) && sleep 1
+	test -f $(server_p12) && touch $(server_p12) && sleep 1
+	touch $@
 
 ###############################################################################
 # Root PKI
@@ -108,16 +110,20 @@ signing-db: $(signing_db) $(signing_crl)
 signing-crt: $(root_crt) $(signing_crt)
 
 ###############################################################################
+# CA certificates
+###############################################################################
+root_ca := certs/ca-certificates.crt
+
+$(root_ca): $(root_crt) $(signing_crt)
+	cat $(root_crt) $(signing_crt) > $@
+
+###############################################################################
 # Servers PKI
 ###############################################################################
-root_ca    := certs/ca-certificates.crt
 server_key := certs/$(PKI_CN).key
 server_csr := certs/$(PKI_CN).csr
 server_crt := certs/$(PKI_CN).crt
 server_p12 := certs/$(PKI_CN).p12
-
-$(root_ca): $(root_crt) $(signing_crt)
-	cat $(root_crt) $(signing_crt) > $@
 
 $(server_key):
 	openssl genpkey -algorithm $(pkey_algorithm) -aes-128-cbc -pass pass:$(PKI_SERVER_PASSWD) -out $@
@@ -167,16 +173,16 @@ ifndef PKI_SAN
 $(error | Define PKI_CN: export PKI_SAN=DNS:pki.lab5.ca,DNS:pki-dev.lab5.ca,IP:10.0.0.1 |)
 endif
 
-ifndef PKI_ROOT_PASSWD
-$(error | PKI_ROOT_PASSWD is not defined |)
+ifeq ($(strip $(PKI_ROOT_PASSWD)),)
+$(error PKI_ROOT_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiRootPassword" > $(HOME)/.secrets/pki/PKI_ROOT_PASSWD  )
 endif
 
-ifndef PKI_SIGNING_PASSWD
-$(error | PKI_SIGNING_PASSWD is not defined |)
+ifeq ($(strip $(PKI_SIGNING_PASSWD)),)
+$(error PKI_SIGNING_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiSigningPassword" > $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD  )
 endif
 
-ifndef PKI_SERVER_PASSWD
-$(error | PKI_SERVER_PASSWD is not defined |)
+ifeq ($(strip $(PKI_SERVER_PASSWD)),)
+$(error PKI_SERVER_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiServerPassword" > $(HOME)/.secrets/pki/PKI_SERVER_PASSWD  )
 endif
 
 ifeq ($(shell which openssl),)
