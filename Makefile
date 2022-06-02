@@ -1,4 +1,4 @@
-# .ONESHELL:
+.ONESHELL:
 .SILENT:
 .EXPORT_ALL_VARIABLES:
 
@@ -29,10 +29,9 @@ settings: .initialized
 all: .initialized root-crt signing-crt server-crt
 
 new: prompt clean root-db signing-db
-	-rm -rf .initialized
 
 clean: prompt
-	-rm -rf ca crl certs
+	-rm -rf ca crl certs .initialized
 
 dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db crl certs
 
@@ -40,13 +39,14 @@ $(dirs):
 	mkdir -p $@
 
 .initialized:
-	touch $(root_key); sleep 1
-	touch $(root_csr); sleep 1
-	touch $(root_crt); sleep 1
-	touch $(signing_key); sleep 1
-	touch $(signing_csr); sleep 1
-	touch $(signing_crt); sleep 1
-	touch $(root_ca); sleep 1
+	$(info # initializing PKI DB)
+	test -f $(root_key) && touch $(root_key); sleep 1
+	test -f $(root_csr) && touch $(root_csr); sleep 1
+	test -f $(root_crt) && touch $(root_crt); sleep 1
+	test -f $(signing_key) && touch $(signing_key); sleep 1
+	test -f $(signing_csr) && touch $(signing_csr); sleep 1
+	test -f $(signing_crt) && touch $(signing_crt); sleep 1
+	test -f $(root_ca) && touch $(root_ca); sleep 1
 	test -f $(server_key) && touch $(server_key) && sleep 1
 	test -f $(server_csr) && touch $(server_csr) && sleep 1
 	test -f $(server_crt) && touch $(server_crt) && sleep 1
