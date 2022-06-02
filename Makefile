@@ -40,13 +40,13 @@ $(dirs):
 
 .initialized:
 	$(info # initializing PKI DB)
-	test -f $(root_key) && touch $(root_key); sleep 1
-	test -f $(root_csr) && touch $(root_csr); sleep 1
-	test -f $(root_crt) && touch $(root_crt); sleep 1
-	test -f $(signing_key) && touch $(signing_key); sleep 1
-	test -f $(signing_csr) && touch $(signing_csr); sleep 1
-	test -f $(signing_crt) && touch $(signing_crt); sleep 1
-	test -f $(root_ca) && touch $(root_ca); sleep 1
+	test -f $(root_key) && touch $(root_key) && sleep 1
+	test -f $(root_csr) && touch $(root_csr) && sleep 1
+	test -f $(root_crt) && touch $(root_crt) && sleep 1
+	test -f $(signing_key) && touch $(signing_key) && sleep 1
+	test -f $(signing_csr) && touch $(signing_csr) && sleep 1
+	test -f $(signing_crt) && touch $(signing_crt) && sleep 1
+	test -f $(root_ca) && touch $(root_ca) && sleep 1
 	test -f $(server_key) && touch $(server_key) && sleep 1
 	test -f $(server_csr) && touch $(server_csr) && sleep 1
 	test -f $(server_crt) && touch $(server_crt) && sleep 1
