@@ -173,16 +173,16 @@ ifndef PKI_SAN
 $(error | Define PKI_CN: export PKI_SAN=DNS:pki.lab5.ca,DNS:pki-dev.lab5.ca,IP:10.0.0.1 |)
 endif
 
-ifndef PKI_ROOT_PASSWD
-$(error | PKI_ROOT_PASSWD is not defined |)
+ifeq ($(strip $(PKI_ROOT_PASSWD)),)
+$(error PKI_ROOT_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiRootPassword" > $(HOME)/.secrets/pki/PKI_ROOT_PASSWD  )
 endif
 
-ifndef PKI_SIGNING_PASSWD
-$(error | PKI_SIGNING_PASSWD is not defined |)
+ifeq ($(strip $(PKI_SIGNING_PASSWD)),)
+$(error PKI_SIGNING_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiSigningPassword" > $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD  )
 endif
 
-ifndef PKI_SERVER_PASSWD
-$(error | PKI_SERVER_PASSWD is not defined |)
+ifeq ($(strip $(PKI_SERVER_PASSWD)),)
+$(error PKI_SERVER_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiServerPassword" > $(HOME)/.secrets/pki/PKI_SERVER_PASSWD  )
 endif
 
 ifeq ($(shell which openssl),)
