@@ -1,0 +1,87 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: DC=ca, DC=lab5, O=Lab5 DevOps Inc., OU=www.lab5.ca, CN=Issuing CA G1
+        Validity
+            Not Before: Jun 25 14:04:15 2022 GMT
+            Not After : Jun 24 14:04:15 2024 GMT
+        Subject: DC=ca, DC=lab5, O=Lab5 DevOps Inc., OU=www.lab5.ca, CN=vault.lab5.ca
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:cd:f1:94:e2:9c:aa:8d:09:74:90:60:3d:07:46:
+                    73:43:f7:63:f7:56:b8:ba:25:82:a4:50:70:e3:67:
+                    36:36:a8:67:b4:3a:6c:29:95:0b:26:55:89:5b:37:
+                    f8:8b:8d:74:40:2c:32:16:74:02:59:e3:74:de:85:
+                    14:62:38:47:4e:32:93:e6:74:74:fb:a5:9a:b4:5a:
+                    04:6f:ec:d0:f8:7b:17:74:cc:5d:a1:59:1d:4f:ee:
+                    ec:25:a7:b3:5a:96:11:56:67:5e:ac:40:7e:30:3e:
+                    e6:ab:c3:51:c3:f4:11:bb:57:24:a0:14:b8:79:6a:
+                    17:fa:75:d0:ea:9b:29:8d:c0:bb:06:79:9f:d5:69:
+                    29:9d:ba:4e:73:16:35:46:e0:0f:c9:d6:07:89:fb:
+                    bb:e8:5a:a7:e4:46:c3:0e:aa:bf:6a:99:8e:2c:8b:
+                    30:d9:dd:76:38:a6:a3:2c:4e:7a:72:83:ea:ab:05:
+                    37:6e:18:72:40:60:ed:89:39:1a:61:4e:ec:23:f4:
+                    95:b5:4a:4c:0a:87:d8:9e:93:b3:e6:cb:c3:f1:da:
+                    d9:0a:e7:2b:26:63:91:9e:b6:de:1c:52:83:21:33:
+                    84:07:62:b1:7b:c8:15:33:03:dc:71:c1:08:60:90:
+                    a5:2a:a7:f5:f3:73:f7:3b:f2:e2:0f:94:9a:db:99:
+                    bf:5b
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Subject Key Identifier: 
+                E9:0D:3A:9B:C1:CD:9E:AF:1B:15:0D:8F:9E:32:3A:3A:9D:61:EC:D2
+            X509v3 Authority Key Identifier: 
+                keyid:D8:9B:C7:36:1E:CD:6D:A7:6C:7B:FE:FA:C5:CA:D8:5F:99:EF:CF:2A
+
+            X509v3 Subject Alternative Name: 
+                DNS:vault.lab5.ca, IP Address:127.0.0.1
+    Signature Algorithm: sha256WithRSAEncryption
+         21:ef:f4:b6:78:c6:1a:a5:0f:d2:12:c4:f2:65:dd:1a:c3:4d:
+         ab:6f:15:59:74:45:68:7b:b5:a9:fc:ae:9a:66:9f:44:d1:6c:
+         2d:a2:f7:62:f6:58:72:6b:ff:0e:be:b2:07:5a:a6:23:63:8a:
+         e9:15:46:c8:9d:09:44:b1:b0:4c:f2:87:a4:17:5f:24:64:8b:
+         15:f0:b1:b3:a0:4e:7f:b3:bc:18:1a:c9:44:f7:88:69:8b:71:
+         ec:5c:c0:0d:58:11:c4:d7:82:16:46:fe:a1:14:a7:32:fd:5e:
+         a6:45:28:d2:93:d0:fa:8d:e3:37:e4:53:b7:e8:00:d5:86:9e:
+         57:59:5f:d7:73:da:ec:33:90:e0:e8:43:c6:bb:19:89:ed:b4:
+         28:44:a3:d0:44:df:92:5e:50:21:2f:79:75:89:aa:a7:17:06:
+         95:bb:0b:12:97:38:11:5e:7c:50:b0:7f:db:47:73:d3:ad:d2:
+         4b:51:a1:da:62:ff:1d:64:23:72:50:b4:64:34:a9:13:d7:58:
+         1a:4d:96:12:78:3c:87:67:6e:eb:bb:db:95:04:d0:54:9a:6a:
+         fc:ad:aa:2f:32:64:31:96:c5:e3:cb:cb:39:66:32:c7:40:7a:
+         5d:9f:94:89:3e:1e:29:85:a8:06:40:c3:68:00:3a:94:d9:8e:
+         52:82:bd:7b
+-----BEGIN CERTIFICATE-----
+MIID/zCCAuegAwIBAgIBATANBgkqhkiG9w0BAQsFADBzMRIwEAYKCZImiZPyLGQB
+GRYCY2ExFDASBgoJkiaJk/IsZAEZFgRsYWI1MRkwFwYDVQQKDBBMYWI1IERldk9w
+cyBJbmMuMRQwEgYDVQQLDAt3d3cubGFiNS5jYTEWMBQGA1UEAwwNSXNzdWluZyBD
+QSBHMTAeFw0yMjA2MjUxNDA0MTVaFw0yNDA2MjQxNDA0MTVaMHMxEjAQBgoJkiaJ
+k/IsZAEZFgJjYTEUMBIGCgmSJomT8ixkARkWBGxhYjUxGTAXBgNVBAoMEExhYjUg
+RGV2T3BzIEluYy4xFDASBgNVBAsMC3d3dy5sYWI1LmNhMRYwFAYDVQQDDA12YXVs
+dC5sYWI1LmNhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzfGU4pyq
+jQl0kGA9B0ZzQ/dj91a4uiWCpFBw42c2NqhntDpsKZULJlWJWzf4i410QCwyFnQC
+WeN03oUUYjhHTjKT5nR0+6WatFoEb+zQ+HsXdMxdoVkdT+7sJaezWpYRVmderEB+
+MD7mq8NRw/QRu1ckoBS4eWoX+nXQ6pspjcC7Bnmf1WkpnbpOcxY1RuAPydYHifu7
+6Fqn5EbDDqq/apmOLIsw2d12OKajLE56coPqqwU3bhhyQGDtiTkaYU7sI/SVtUpM
+CofYnpOz5svD8drZCucrJmORnrbeHFKDITOEB2Kxe8gVMwPcccEIYJClKqf183P3
+O/LiD5Sa25m/WwIDAQABo4GdMIGaMA4GA1UdDwEB/wQEAwIFoDAJBgNVHRMEAjAA
+MB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHQ4EFgQU6Q06m8HN
+nq8bFQ2PnjI6Op1h7NIwHwYDVR0jBBgwFoAU2JvHNh7Nbadse/76xcrYX5nvzyow
+HgYDVR0RBBcwFYINdmF1bHQubGFiNS5jYYcEfwAAATANBgkqhkiG9w0BAQsFAAOC
+AQEAIe/0tnjGGqUP0hLE8mXdGsNNq28VWXRFaHu1qfyummafRNFsLaL3YvZYcmv/
+Dr6yB1qmI2OK6RVGyJ0JRLGwTPKHpBdfJGSLFfCxs6BOf7O8GBrJRPeIaYtx7FzA
+DVgRxNeCFkb+oRSnMv1epkUo0pPQ+o3jN+RTt+gA1YaeV1lf13Pa7DOQ4OhDxrsZ
+ie20KESj0ETfkl5QIS95dYmqpxcGlbsLEpc4EV58ULB/20dz063SS1Gh2mL/HWQj
+clC0ZDSpE9dYGk2WEng8h2du67vblQTQVJpq/K2qLzJkMZbF48vLOWYyx0B6XZ+U
+iT4eKYWoBkDDaAA6lNmOUoK9ew==
+-----END CERTIFICATE-----
