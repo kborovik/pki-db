@@ -16,23 +16,7 @@ https://pki-tutorial.readthedocs.io/en/latest/index.html
 git clone https://github.com/kborovik/pki-db.git
 ```
 
-- Create new PKI DB
-
-```
-make new
-```
-
-```
-
-######################################################################
-# WARNING! - All TLS private keys will be destroyed!
-######################################################################
-
-Continue destruction? (yes/no): yes
-
-```
-
-- Set PKI passwords
+- Set private key passwords
 
 ```
 mkdir -p ~/.secrets/pki
@@ -61,18 +45,32 @@ vim etc/server.conf
 - Create certificate template (`CommonName` and `subjectAltName`)
 
 ```
-cp env/vault.lab5.ca env/new.host.com
+cp hosts/www.lab5.ca hosts/new.host.com
 ```
 
 ```
-vim env/new.host.com
+vim hosts/new.host.com
 ```
 
 ```
-source env/new.host.com
+source hosts/new.host.com
 ```
 
-- Check settings
+- Initialize new PKI DB
+
+```
+make new
+```
+
+```
+######################################################################
+# WARNING! - All TLS private keys will be destroyed!
+######################################################################
+
+Continue destruction? (yes/no): yes
+```
+
+- Create new certificate
 
 ```
 make
@@ -82,16 +80,12 @@ make
 ######################################################################
 #
 # Settings:
-# - PKI_CN  = vault.lab5.ca
-# - PKI_SAN = DNS:vault.lab5.ca,IP:127.0.0.1
+# - PKI_CN  = new.host.com
+# - PKI_SAN = DNS:new.host.com,IP:127.0.0.1
 #
 ######################################################################
-```
 
-- Create new Root, Signing and Host certificate
-
-```
-make all
+Create certificate? (yes/no):
 ```
 
 - Remove old Git repository
@@ -113,23 +107,23 @@ git commit -m 'new pki-db host.com'
 - Create server certificate template
 
 ```
-vim env/vault.lab5.ca
+vim hosts/new.host.com
 ```
 
 ```
-cat env/vault.lab5.ca
+cat hosts/new.host.com
 ```
 
 ```
-export PKI_CN=vault.lab5.ca
-export PKI_SAN=DNS:vault.lab5.ca,IP:127.0.0.1
+export PKI_CN=new.host.com
+export PKI_SAN=DNS:new.host.com,IP:127.0.0.1
 ```
 
 ```
-source env/vault.lab5.ca
+source hosts/new.host.com
 ```
 
-- Check settings
+- Create certificate
 
 ```
 make
@@ -139,16 +133,12 @@ make
 ######################################################################
 #
 # Settings:
-# - PKI_CN  = vault.lab5.ca
-# - PKI_SAN = DNS:vault.lab5.ca,IP:127.0.0.1
+# - PKI_CN  = new.host.com
+# - PKI_SAN = DNS:new.host.com,IP:127.0.0.1
 #
 ######################################################################
-```
 
-- Create certificate
-
-```
-make all
+Create certificate? (yes/no):
 ```
 
 ```
@@ -158,10 +148,10 @@ tree certs/
 ```
 certs/
 ├── ca-certificates.crt
-├── vault.lab5.ca.crt
-├── vault.lab5.ca.csr
-├── vault.lab5.ca.key
-└── vault.lab5.ca.p12
+├── new.host.com.crt
+├── new.host.com.csr
+├── new.host.com.key
+└── new.host.com.p12
 
 0 directories, 5 files
 ```
