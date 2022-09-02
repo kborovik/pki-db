@@ -69,7 +69,7 @@ $(root_crl): $(dirs)
 	echo 01 > $@
 
 $(root_key):
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-128-cbc -pass pass:$(PKI_ROOT_PASSWD) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(PKI_ROOT_PASSWD) -out $@
 
 $(root_csr): $(root_key)
 	openssl req -new -config etc/root-ca.conf -key $(root_key) -passin pass:$(PKI_ROOT_PASSWD) -out $@
@@ -97,7 +97,7 @@ $(signing_crl): $(dirs)
 	echo 01 > $@
 
 $(signing_key):
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-128-cbc -pass pass:$(PKI_SIGNING_PASSWD) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(signing_csr): $(signing_key)
 	openssl req -new -config etc/signing-ca.conf -key $(signing_key) -passin pass:$(PKI_SIGNING_PASSWD) -out $@
@@ -126,7 +126,7 @@ server_crt := certs/$(PKI_CN).crt
 server_p12 := certs/$(PKI_CN).p12
 
 $(server_key):
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-128-cbc -pass pass:$(PKI_SERVER_PASSWD) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(PKI_SERVER_PASSWD) -out $@
 
 $(server_csr): $(server_key)
 	openssl req -new -config etc/server.conf -key $(server_key) -passin pass:$(PKI_SERVER_PASSWD) -out $@
