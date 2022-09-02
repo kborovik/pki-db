@@ -2,10 +2,10 @@
 .SILENT:
 .EXPORT_ALL_VARIABLES:
 
-SELL := /bin/bash
+SELL := /usr/bin/env bash
 
-PKI_CN ?=
-PKI_SAN ?=
+PKI_CN ?= i_am_not_set
+PKI_SAN ?= i_am_net_set
 
 PKI_ROOT_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_ROOT_PASSWD))
 PKI_SIGNING_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD))
@@ -13,6 +13,16 @@ PKI_SERVER_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_SERVER_PASSWD))
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
+
+###############################################################################
+# General PKI
+###############################################################################
+all: settings prompt-create root-crt signing-crt server-crt
+
+new: clean root-db signing-db
+
+clean: prompt-destroy
+	-rm -rf ca crl certs .initialized
 
 settings: .initialized
 	echo "######################################################################"
@@ -23,23 +33,13 @@ settings: .initialized
 	echo "#"
 	echo "######################################################################"
 
-###############################################################################
-# General PKI
-###############################################################################
-all: .initialized root-crt signing-crt server-crt
-
-new: prompt clean root-db signing-db
-
-clean: prompt
-	-rm -rf ca crl certs .initialized
-
 dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db crl certs
 
 $(dirs):
 	mkdir -p $@
 
 .initialized:
-	$(info # initializing PKI DB)
+	$(info ==> initializing PKI DB <==)
 	test -f $(root_key) && touch $(root_key) && sleep 1
 	test -f $(root_csr) && touch $(root_csr) && sleep 1
 	test -f $(root_crt) && touch $(root_crt) && sleep 1
@@ -58,7 +58,7 @@ $(dirs):
 ###############################################################################
 root_db := ca/root-ca/db/root-ca.db ca/root-ca/db/root-ca.db.attr
 root_crl := ca/root-ca/db/root-ca.crt.srl ca/root-ca/db/root-ca.crl.srl
-root_key := ca/root-ca/private/root-ca.key
+root_key := ca/root-ca/private/root-ca.enc
 root_csr := ca/root-ca.csr
 root_crt := ca/root-ca.crt
 
@@ -86,7 +86,7 @@ root-crt: $(root_crt)
 ###############################################################################
 signing_db := ca/signing-ca/db/signing-ca.db ca/signing-ca/db/signing-ca.db.attr
 signing_crl := ca/signing-ca/db/signing-ca.crt.srl ca/signing-ca/db/signing-ca.crl.srl
-signing_key := ca/signing-ca/private/signing-ca.key
+signing_key := ca/signing-ca/private/signing-ca.enc
 signing_csr := ca/signing-ca.csr
 signing_crt := ca/signing-ca.crt
 
@@ -120,7 +120,7 @@ $(root_ca): $(root_crt) $(signing_crt)
 ###############################################################################
 # Servers PKI
 ###############################################################################
-server_key := certs/$(PKI_CN).key
+server_key := certs/$(PKI_CN).enc
 server_csr := certs/$(PKI_CN).csr
 server_crt := certs/$(PKI_CN).crt
 server_p12 := certs/$(PKI_CN).p12
@@ -154,7 +154,7 @@ show-p12:
 ###############################################################################
 # Errors Check
 ###############################################################################
-prompt:
+prompt-destroy:
 	echo "######################################################################"
 	echo "# WARNING! - All TLS private keys will be destroyed!"
 	echo "######################################################################"
@@ -165,24 +165,32 @@ prompt:
 	  exit 100
 	fi
 
+prompt-create:
+	echo
+	read -p "Create certificate? (yes/no): " INP
+	if [ "$${INP}" != "yes" ]; then 
+	  echo "Deployment aborted"
+	  exit 100
+	fi
+
 ifndef PKI_CN
-$(error | Define PKI_CN: export PKI_CN=pki.lab5.ca |)
+$(error Set PKI_CN ==> vi hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
 endif
 
 ifndef PKI_SAN
-$(error | Define PKI_CN: export PKI_SAN=DNS:pki.lab5.ca,DNS:pki-dev.lab5.ca,IP:10.0.0.1 |)
+$(error Set PKI_SAN ==> vi hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
 endif
 
 ifeq ($(strip $(PKI_ROOT_PASSWD)),)
-$(error PKI_ROOT_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiRootPassword" > $(HOME)/.secrets/pki/PKI_ROOT_PASSWD  )
+$(error PKI_ROOT_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiRootPassword" > $(HOME)/.secrets/pki/PKI_ROOT_PASSWD <==)
 endif
 
 ifeq ($(strip $(PKI_SIGNING_PASSWD)),)
-$(error PKI_SIGNING_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiSigningPassword" > $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD  )
+$(error PKI_SIGNING_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiSigningPassword" > $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD <==)
 endif
 
 ifeq ($(strip $(PKI_SERVER_PASSWD)),)
-$(error PKI_SERVER_PASSWD is empty. Run command:  mkdir -p ${HOME}/.secrets/pki && echo "pkiServerPassword" > $(HOME)/.secrets/pki/PKI_SERVER_PASSWD  )
+$(error PKI_SERVER_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiServerPassword" > $(HOME)/.secrets/pki/PKI_SERVER_PASSWD <==)
 endif
 
 ifeq ($(shell which openssl),)
