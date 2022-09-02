@@ -1,0 +1,2 @@
+export PKI_CN=www.lab5.ca
+export PKI_SAN=DNS:www.lab5.ca,IP:127.0.0.1
