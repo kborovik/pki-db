@@ -6,6 +6,10 @@ The repository is based on the excellent work of the "OpenSSL PKI Tutorial" team
 
 https://pki-tutorial.readthedocs.io/en/latest/index.html
 
+# Requirements
+
+The procedure was developed and tested with `OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)`
+
 # How to Use
 
 ## Create New PKI
