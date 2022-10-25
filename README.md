@@ -1,10 +1,22 @@
 # TLS (SSL) PKI for DevOps
 
-This repository helps manage TLS Certificates (PKI) with the OpenSSL toolkit in DEV/TEST environments to mimic external (PROD) X.509 PKI.
+The repository helps to create and test a Certificate Signing Request (CSR).
 
-The repository is based on the excellent work of the "OpenSSL PKI Tutorial" team.
+## Problem
 
-https://pki-tutorial.readthedocs.io/en/latest/index.html
+Corporate CSR process might take hours, days or weeks.
+
+## Solution
+
+Before submitting CSR to the corporate PKI create a test certificate to test Subject Alternative Names (SAN) and certificate deployment procedure.
+
+This repo generates certificate package:
+
+- Root CA certificate `ca-certificates.crt`
+- Test Host certificate `host.domain.com.crt`
+- Test Host CSR `host.domain.com.csr`
+- Test Host encrypted private key `host.domain.com.enc`
+- Test Host P12 (PFX) bundle `host.domain.com.p12`
 
 # Requirements
 
@@ -154,7 +166,7 @@ certs/
 ├── ca-certificates.crt
 ├── new.host.com.crt
 ├── new.host.com.csr
-├── new.host.com.key
+├── new.host.com.enc
 └── new.host.com.p12
 
 0 directories, 5 files
@@ -191,3 +203,9 @@ export pkey_algorithm=ED25519
 or updating `pkey_algorithm` in Makefile
 
 Note: `ED25519` and `ED448` requires OpenSSL 1.1.1 and higher
+
+# Thank you
+
+The repository is based on the excellent work of the "OpenSSL PKI Tutorial".
+
+https://pki-tutorial.readthedocs.io/en/latest/index.html
