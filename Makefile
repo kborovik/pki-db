@@ -27,9 +27,10 @@ clean: prompt-destroy
 settings: .initialized
 	echo "######################################################################"
 	echo "#"
-	echo "# Settings:"
-	echo "# - PKI_CN  = $(PKI_CN)"
-	echo "# - PKI_SAN = $(PKI_SAN)"
+	echo "# Subject Name (SN): $(PKI_CN)"
+	echo "#"
+	echo "# Subject Alternative Name (SAN):"
+	echo "# $(PKI_SAN)"
 	echo "#"
 	echo "######################################################################"
 
