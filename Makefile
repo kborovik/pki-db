@@ -136,7 +136,7 @@ $(server_crt): $(signing_crt) $(server_csr)
 	openssl ca -config etc/signing-ca.conf -in $(server_csr) -extensions server_ext -passin pass:$(PKI_SIGNING_PASSWD) -out $@
 
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
-	openssl pkcs12 -export -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(PKI_CN) -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
+	openssl pkcs12 -export -legacy -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(PKI_CN) -passout pass:$(PKI_SERVER_PASSWD) -passin pass:$(PKI_SERVER_PASSWD) -out $@
 
 server-crt: $(server_crt) $(server_p12) $(root_ca)
 
@@ -150,7 +150,7 @@ show-crt:
 	openssl x509 -text -noout -in $(server_crt)
 
 show-p12:
-	openssl pkcs12 -noenc -info -in $(server_p12) -passin 'pass:$(PKI_SERVER_PASSWD)'
+	openssl pkcs12 -noenc -legacy -info -in $(server_p12) -passin 'pass:$(PKI_SERVER_PASSWD)'
 
 ###############################################################################
 # Errors Check
