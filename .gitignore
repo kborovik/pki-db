@@ -1,1 +1,3 @@
 .initialized
+env/*.*
+!env/*.asc

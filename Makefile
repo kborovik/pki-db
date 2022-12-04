@@ -4,6 +4,8 @@
 
 SELL := /usr/bin/env bash
 
+gpg_key := C0CCF0BF
+
 PKI_CN ?= i_am_not_set
 PKI_SAN ?= i_am_net_set
 
@@ -13,6 +15,46 @@ PKI_SERVER_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_SERVER_PASSWD))
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
+
+###############################################################################
+# PGP Secrets
+###############################################################################
+pki_root_pass := env/PKI_ROOT_PASSWD
+pki_signing_pass := env/PKI_SIGNING_PASSWD
+pki_server_pass := env/PKI_SERVER_PASSWD
+
+secrets_list := $(pki_root_pass) $(pki_signing_pass) $(pki_server_pass)
+
+define encrypt_file
+if [ -f $(1) ]; then
+  gpg --encrypt --no-options --no-greeting --armor --recipient=$(gpg_key) $(1) && shred -u $(1)
+fi
+endef
+
+define decrypt_file
+gpg --decrypt --no-options --no-greeting --quiet --yes --output $(1) $(1).asc
+endef
+
+define decrypt_base64
+gpg --decrypt --no-options --no-greeting --quiet $(1).asc | base64 --wrap=0
+endef
+
+define decrypt_text
+gpg --decrypt --no-options --no-greeting --quiet $(1).asc
+endef
+
+secrets-encrypt:
+	for secret in $(secrets_list); do
+	$(call encrypt_file,"$$secret")
+	done
+
+secrets-decrypt:
+	for secret in $(secrets_list); do
+	$(call decrypt_file,"$$secret")
+	done
+
+secrets-clean:
+	-shred -uf $(secrets_list) 2>/dev/null
 
 ###############################################################################
 # General PKI
