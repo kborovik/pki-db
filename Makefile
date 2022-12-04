@@ -23,8 +23,8 @@ all: settings prompt-create root-crt signing-crt server-crt
 
 new: clean root-db signing-db
 
-clean: secrets-clean prompt-destroy
-	-rm -rf ca crl certs .initialized
+clean: prompt-destroy
+	-rm -rf ca crl certs .initialized env/*.asc
 
 settings: .initialized
 	echo "######################################################################"
@@ -36,7 +36,7 @@ settings: .initialized
 	echo "#"
 	echo "######################################################################"
 
-dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs
+dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs env
 
 $(dirs):
 	mkdir -p $@
@@ -169,12 +169,12 @@ if [ -f $(1) ]; then
 fi
 endef
 
-define decrypt_file
-gpg --decrypt --no-options --no-greeting --quiet --yes --output $(1) $(1).asc
-endef
-
 define decrypt_text
-gpg --decrypt --no-options --no-greeting --quiet $(1).asc
+if [ -f $(1) ]; then
+  gpg --decrypt --no-options --no-greeting --quiet $(1).asc
+else
+  uuidgen
+fi
 endef
 
 secrets-encrypt:
@@ -182,10 +182,10 @@ secrets-encrypt:
 	$(call encrypt_file,"$$secret")
 	done
 
-secrets-decrypt:
-	for secret in $(secrets_list); do
-	$(call decrypt_file,"$$secret")
-	done
+secrets-new: $(dirs)
+	uuidgen >| $(pki_root_pass)
+	uuidgen >| $(pki_signing_pass)
+	uuidgen >| $(pki_server_pass)
 
 secrets-clean:
 	-shred -uf $(secrets_list) 2>/dev/null
