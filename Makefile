@@ -6,12 +6,12 @@ SELL := /usr/bin/env bash
 
 gpg_key := C0CCF0BF
 
-PKI_CN ?= i_am_not_set
-PKI_SAN ?= i_am_net_set
+PKI_CN ?=
+PKI_SAN ?=
 
-PKI_ROOT_PASSWD ?= $(strip $(call decrypt_file,$(pki_root_pass)))
-PKI_SIGNING_PASSWD ?= $(strip $(call decrypt_file,$(pki_signing_pass)))
-PKI_SERVER_PASSWD ?= $(strip $(call decrypt_file,$(pki_server_pass)))
+PKI_ROOT_PASSWD ?= $(shell $(call decrypt_text,$(pki_root_pass)))
+PKI_SIGNING_PASSWD ?= $(shell $(call decrypt_text,$(pki_signing_pass)))
+PKI_SERVER_PASSWD ?= $(shell $(call decrypt_text,$(pki_server_pass)))
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
@@ -23,7 +23,7 @@ all: settings prompt-create root-crt signing-crt server-crt
 
 new: clean root-db signing-db
 
-clean: prompt-destroy
+clean: secrets-clean prompt-destroy
 	-rm -rf ca crl certs .initialized
 
 settings: .initialized
@@ -213,23 +213,23 @@ prompt-create:
 	fi
 
 ifndef PKI_CN
-$(error Set PKI_CN ==> vi hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
+$(error Set PKI_CN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
 endif
 
 ifndef PKI_SAN
-$(error Set PKI_SAN ==> vi hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
+$(error Set PKI_SAN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
 endif
 
 ifeq ($(strip $(PKI_ROOT_PASSWD)),)
-$(error PKI_ROOT_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiRootPassword" > $(HOME)/.secrets/pki/PKI_ROOT_PASSWD <==)
+$(error PKI_ROOT_PASSWD is not set <==)
 endif
 
 ifeq ($(strip $(PKI_SIGNING_PASSWD)),)
-$(error PKI_SIGNING_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiSigningPassword" > $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD <==)
+$(error PKI_SIGNING_PASSWD is not set <==)
 endif
 
 ifeq ($(strip $(PKI_SERVER_PASSWD)),)
-$(error PKI_SERVER_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiServerPassword" > $(HOME)/.secrets/pki/PKI_SERVER_PASSWD <==)
+$(error PKI_SERVER_PASSWD is not set <==)
 endif
 
 ifeq ($(shell which openssl),)
