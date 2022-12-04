@@ -9,10 +9,6 @@ gpg_key := C0CCF0BF
 PKI_CN ?=
 PKI_SAN ?=
 
-PKI_ROOT_PASSWD ?= $(shell $(call decrypt_text,$(pki_root_pass)))
-PKI_SIGNING_PASSWD ?= $(shell $(call decrypt_text,$(pki_signing_pass)))
-PKI_SERVER_PASSWD ?= $(shell $(call decrypt_text,$(pki_server_pass)))
-
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
 
@@ -21,10 +17,10 @@ pkey_algorithm ?= RSA
 ###############################################################################
 all: settings prompt-create root-crt signing-crt server-crt
 
-new: clean root-db signing-db
+new: clean secrets-new root-db signing-db
 
 clean: secrets-clean prompt-destroy
-	-rm -rf ca crl certs .initialized
+	-rm -rf ca crl certs env .initialized
 
 settings: .initialized
 	echo "######################################################################"
@@ -36,7 +32,7 @@ settings: .initialized
 	echo "#"
 	echo "######################################################################"
 
-dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs
+dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs env
 
 $(dirs):
 	mkdir -p $@
@@ -177,6 +173,11 @@ define decrypt_text
 gpg --decrypt --no-options --no-greeting --quiet $(1).asc
 endef
 
+secrets-new: $(dirs)
+	uuidgen > $(pki_root_pass)
+	uuidgen > $(pki_signing_pass)
+	uuidgen > $(pki_server_pass)
+
 secrets-encrypt:
 	for secret in $(secrets_list); do
 	$(call encrypt_file,"$$secret")
@@ -220,18 +221,10 @@ ifndef PKI_SAN
 $(error Set PKI_SAN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
 endif
 
-ifeq ($(strip $(PKI_ROOT_PASSWD)),)
-$(error PKI_ROOT_PASSWD is not set <==)
-endif
-
-ifeq ($(strip $(PKI_SIGNING_PASSWD)),)
-$(error PKI_SIGNING_PASSWD is not set <==)
-endif
-
-ifeq ($(strip $(PKI_SERVER_PASSWD)),)
-$(error PKI_SERVER_PASSWD is not set <==)
-endif
-
 ifeq ($(shell which openssl),)
 $(error Missing command 'openssl'. https://www.openssl.org/)
+endif
+
+ifeq ($(shell which gpg),)
+$(error Missing command 'gpg'. https://gnupg.org/)
 endif
