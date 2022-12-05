@@ -4,12 +4,10 @@
 
 SELL := /usr/bin/env bash
 
-PKI_CN ?= i_am_not_set
-PKI_SAN ?= i_am_net_set
+gpg_key ?= 51DB9DC8
 
-PKI_ROOT_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_ROOT_PASSWD))
-PKI_SIGNING_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD))
-PKI_SERVER_PASSWD ?= $(strip $(file < $(HOME)/.secrets/pki/PKI_SERVER_PASSWD))
+PKI_CN ?=
+PKI_SAN ?=
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
@@ -19,10 +17,10 @@ pkey_algorithm ?= RSA
 ###############################################################################
 all: settings prompt-create root-crt signing-crt server-crt
 
-new: clean root-db signing-db
+new: clean secrets-encrypt root-db signing-db
 
 clean: prompt-destroy
-	-rm -rf ca crl certs .initialized
+	-rm -rf ca crl certs .initialized env/*.asc
 
 settings: .initialized
 	echo "######################################################################"
@@ -34,7 +32,7 @@ settings: .initialized
 	echo "#"
 	echo "######################################################################"
 
-dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs
+dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs env
 
 $(dirs):
 	mkdir -p $@
@@ -153,6 +151,50 @@ show-p12:
 	openssl pkcs12 -noenc -legacy -info -in $(server_p12) -passin 'pass:$(PKI_SERVER_PASSWD)'
 
 ###############################################################################
+# PGP Secrets
+###############################################################################
+
+pki_root_pass := env/PKI_ROOT_PASSWD
+pki_signing_pass := env/PKI_SIGNING_PASSWD
+pki_server_pass := env/PKI_SERVER_PASSWD
+
+ifneq ($(wildcard $(pki_root_pass).asc),)
+PKI_ROOT_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_root_pass).asc)
+else
+PKI_ROOT_PASSWD := $(shell uuidgen)
+endif
+
+ifneq ($(wildcard $(pki_signing_pass).asc),)
+PKI_SIGNING_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_signing_pass).asc)
+else
+PKI_SIGNING_PASSWD := $(shell uuidgen)
+endif
+
+ifneq ($(wildcard $(pki_server_pass).asc),)
+PKI_SERVER_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_server_pass).asc)
+else
+PKI_SERVER_PASSWD := $(shell uuidgen)
+endif
+
+define encrypt_file
+gpg --encrypt --no-options --no-greeting --armor --recipient=$(gpg_key) $(1) && shred -u $(1)
+endef
+
+define decrypt_text
+gpg --decrypt --no-options --no-greeting --quiet $(1).asc
+endef
+
+secrets-encrypt: secrets-new
+	$(call encrypt_file,$(pki_root_pass))
+	$(call encrypt_file,$(pki_signing_pass))
+	$(call encrypt_file,$(pki_server_pass))
+
+secrets-new: $(dirs)
+	uuidgen >| $(pki_root_pass)
+	uuidgen >| $(pki_signing_pass)
+	uuidgen >| $(pki_server_pass)
+
+###############################################################################
 # Errors Check
 ###############################################################################
 prompt-destroy:
@@ -175,25 +217,30 @@ prompt-create:
 	fi
 
 ifndef PKI_CN
-$(error Set PKI_CN ==> vi hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
+$(error Set PKI_CN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
 endif
 
 ifndef PKI_SAN
-$(error Set PKI_SAN ==> vi hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
+$(error Set PKI_SAN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
 endif
 
 ifeq ($(strip $(PKI_ROOT_PASSWD)),)
-$(error PKI_ROOT_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiRootPassword" > $(HOME)/.secrets/pki/PKI_ROOT_PASSWD <==)
+$(error PKI_ROOT_PASSWD is not set <==)
 endif
 
 ifeq ($(strip $(PKI_SIGNING_PASSWD)),)
-$(error PKI_SIGNING_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiSigningPassword" > $(HOME)/.secrets/pki/PKI_SIGNING_PASSWD <==)
+$(error PKI_SIGNING_PASSWD is not set <==)
 endif
 
 ifeq ($(strip $(PKI_SERVER_PASSWD)),)
-$(error PKI_SERVER_PASSWD is empty. ==> mkdir -p ${HOME}/.secrets/pki && echo "pkiServerPassword" > $(HOME)/.secrets/pki/PKI_SERVER_PASSWD <==)
+$(error PKI_SERVER_PASSWD is not set <==)
 endif
 
 ifeq ($(shell which openssl),)
 $(error Missing command 'openssl'. https://www.openssl.org/)
 endif
+
+ifeq ($(shell which gpg),)
+$(error Missing command 'gpg'. https://gnupg.org/)
+endif
+
