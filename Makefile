@@ -9,10 +9,6 @@ gpg_key ?= 51DB9DC8
 PKI_CN ?=
 PKI_SAN ?=
 
-pki_root_pass := env/PKI_ROOT_PASSWD
-pki_signing_pass := env/PKI_SIGNING_PASSWD
-pki_server_pass := env/PKI_SERVER_PASSWD
-
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
 
@@ -158,6 +154,10 @@ show-p12:
 # PGP Secrets
 ###############################################################################
 
+pki_root_pass := env/PKI_ROOT_PASSWD
+pki_signing_pass := env/PKI_SIGNING_PASSWD
+pki_server_pass := env/PKI_SERVER_PASSWD
+
 ifneq ($(wildcard $(pki_root_pass).asc),)
 PKI_ROOT_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_root_pass).asc)
 else
@@ -171,12 +171,10 @@ PKI_SIGNING_PASSWD := $(shell uuidgen)
 endif
 
 ifneq ($(wildcard $(pki_server_pass).asc),)
-PKI_SERVER_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_root_pass).asc)
+PKI_SERVER_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_server_pass).asc)
 else
 PKI_SERVER_PASSWD := $(shell uuidgen)
 endif
-
-secrets_list := $(pki_root_pass) $(pki_signing_pass) $(pki_server_pass)
 
 define encrypt_file
 gpg --encrypt --no-options --no-greeting --armor --recipient=$(gpg_key) $(1) && shred -u $(1)
@@ -187,17 +185,14 @@ gpg --decrypt --no-options --no-greeting --quiet $(1).asc
 endef
 
 secrets-encrypt: secrets-new
-	for secret in $(secrets_list); do
-	$(call encrypt_file,"$$secret")
-	done
+	$(call encrypt_file,$(pki_root_pass))
+	$(call encrypt_file,$(pki_signing_pass))
+	$(call encrypt_file,$(pki_server_pass))
 
 secrets-new: $(dirs)
 	uuidgen >| $(pki_root_pass)
 	uuidgen >| $(pki_signing_pass)
 	uuidgen >| $(pki_server_pass)
-
-secrets-clean:
-	-shred -uf $(secrets_list) 2>/dev/null
 
 ###############################################################################
 # Errors Check
