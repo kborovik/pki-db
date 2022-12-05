@@ -32,22 +32,10 @@ The procedure was developed and tested with `OpenSSL 3.0.2 15 Mar 2022 (Library:
 git clone https://github.com/kborovik/pki-db.git
 ```
 
-- Set private key passwords
+- Set GPG key (gpg_key := 51DB9DC8)
 
 ```
-mkdir -p ~/.secrets/pki
-```
-
-```
-echo "VeryBigPassword" > ~/.secrets/pki/PKI_ROOT_PASSWD
-```
-
-```
-echo "SimplyBigPassword" > ~/.secrets/pki/PKI_SIGNING_PASSWD
-```
-
-```
-echo "EasySmallPassword" > ~/.secrets/pki/PKI_SERVER_PASSWD
+vim Makefile
 ```
 
 - Update `[ ca_dn ]` information
@@ -131,8 +119,8 @@ cat hosts/new.host.com
 ```
 
 ```
-export PKI_CN=new.host.com
-export PKI_SAN=DNS:new.host.com,IP:127.0.0.1
+export PKI_CN="new.host.com"
+export PKI_SAN="DNS:new.host.com, IP:127.0.0.1"
 ```
 
 ```
@@ -150,7 +138,7 @@ make
 #
 # Settings:
 # - PKI_CN  = new.host.com
-# - PKI_SAN = DNS:new.host.com,IP:127.0.0.1
+# - PKI_SAN = DNS:new.host.com, IP:127.0.0.1
 #
 ######################################################################
 
