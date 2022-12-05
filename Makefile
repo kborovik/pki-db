@@ -4,14 +4,14 @@
 
 SELL := /usr/bin/env bash
 
-gpg_key := C0CCF0BF
+gpg_key := 51DB9DC8
 
 PKI_CN ?=
 PKI_SAN ?=
 
-PKI_ROOT_PASSWD ?= $(shell $(call decrypt_text,$(pki_root_pass)))
-PKI_SIGNING_PASSWD ?= $(shell $(call decrypt_text,$(pki_signing_pass)))
-PKI_SERVER_PASSWD ?= $(shell $(call decrypt_text,$(pki_server_pass)))
+pki_root_pass := env/PKI_ROOT_PASSWD
+pki_signing_pass := env/PKI_SIGNING_PASSWD
+pki_server_pass := env/PKI_SERVER_PASSWD
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
@@ -21,7 +21,7 @@ pkey_algorithm ?= RSA
 ###############################################################################
 all: settings prompt-create root-crt signing-crt server-crt
 
-new: clean root-db signing-db
+new: clean secrets-encrypt root-db signing-db
 
 clean: prompt-destroy
 	-rm -rf ca crl certs .initialized env/*.asc
@@ -157,9 +157,24 @@ show-p12:
 ###############################################################################
 # PGP Secrets
 ###############################################################################
-pki_root_pass := env/PKI_ROOT_PASSWD
-pki_signing_pass := env/PKI_SIGNING_PASSWD
-pki_server_pass := env/PKI_SERVER_PASSWD
+
+ifneq ($(wildcard $(pki_root_pass).asc),)
+PKI_ROOT_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_root_pass).asc)
+else
+PKI_ROOT_PASSWD := $(shell uuidgen)
+endif
+
+ifneq ($(wildcard $(pki_signing_pass).asc),)
+PKI_SIGNING_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_signing_pass).asc)
+else
+PKI_SIGNING_PASSWD := $(shell uuidgen)
+endif
+
+ifneq ($(wildcard $(pki_server_pass).asc),)
+PKI_SERVER_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_root_pass).asc)
+else
+PKI_SERVER_PASSWD := $(shell uuidgen)
+endif
 
 secrets_list := $(pki_root_pass) $(pki_signing_pass) $(pki_server_pass)
 
@@ -170,14 +185,10 @@ fi
 endef
 
 define decrypt_text
-if [ -f $(1) ]; then
-  gpg --decrypt --no-options --no-greeting --quiet $(1).asc
-else
-  uuidgen
-fi
+gpg --decrypt --no-options --no-greeting --quiet $(1).asc
 endef
 
-secrets-encrypt:
+secrets-encrypt: secrets-new
 	for secret in $(secrets_list); do
 	$(call encrypt_file,"$$secret")
 	done
@@ -235,3 +246,8 @@ endif
 ifeq ($(shell which openssl),)
 $(error Missing command 'openssl'. https://www.openssl.org/)
 endif
+
+ifeq ($(shell which gpg),)
+$(error Missing command 'gpg'. https://gnupg.org/)
+endif
+
