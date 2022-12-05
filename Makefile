@@ -4,7 +4,7 @@
 
 SELL := /usr/bin/env bash
 
-gpg_key := 51DB9DC8
+gpg_key ?= 51DB9DC8
 
 PKI_CN ?=
 PKI_SAN ?=
@@ -179,9 +179,7 @@ endif
 secrets_list := $(pki_root_pass) $(pki_signing_pass) $(pki_server_pass)
 
 define encrypt_file
-if [ -f $(1) ]; then
-  gpg --encrypt --no-options --no-greeting --armor --recipient=$(gpg_key) $(1) && shred -u $(1)
-fi
+gpg --encrypt --no-options --no-greeting --armor --recipient=$(gpg_key) $(1) && shred -u $(1)
 endef
 
 define decrypt_text
