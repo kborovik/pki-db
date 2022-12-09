@@ -28,7 +28,7 @@ settings: .initialized
 	echo "# Subject Name (SN): $(PKI_CN)"
 	echo "#"
 	echo "# Subject Alternative Name (SAN):"
-	echo "# $(PKI_SAN)"
+	echo "#   $(PKI_SAN)"
 	echo "#"
 	echo "######################################################################"
 
