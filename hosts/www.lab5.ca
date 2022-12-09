@@ -1,7 +1,7 @@
 #!/bin/sh
 export PKI_CN="www.lab5.ca"
 export PKI_SAN="\
-  DNS:www.lab5.ca,\
-  DNS:log.lab5.ca,\
-  IP:127.0.0.1,\
-  IP:10.99.99.100"
+DNS:www.lab5.ca,\
+DNS:log.lab5.ca,\
+IP:10.99.99.100,\
+IP:127.0.0.1"
