@@ -4,13 +4,12 @@
 
 SELL := /usr/bin/env bash
 
-gpg_key ?= 51DB9DC8
-
+GPG_KEY ?= D9EC1DBD6CB9C69E187DA9EE7CC32F3151DB9DC8
 PKI_CN ?=
 PKI_SAN ?=
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
-pkey_algorithm ?= RSA
+pkey_algorithm ?= ED25519
 
 ###############################################################################
 # General PKI
@@ -23,14 +22,9 @@ clean: prompt-destroy
 	-rm -rf ca crl certs .initialized env/*.asc
 
 settings: .initialized
-	echo "######################################################################"
-	echo "#"
-	echo "# Subject Name (SN): $(PKI_CN)"
-	echo "#"
-	echo "# Subject Alternative Name (SAN):"
-	echo "#   $(PKI_SAN)"
-	echo "#"
-	echo "######################################################################"
+	echo "GPG_KEY=$(GPG_KEY)"
+	echo "PKI_CN=$(PKI_CN)"
+	echo "PKI_SAN=$(PKI_SAN)"
 
 dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs env
 
@@ -161,23 +155,23 @@ pki_server_pass := env/PKI_SERVER_PASSWD
 ifneq ($(wildcard $(pki_root_pass).asc),)
 PKI_ROOT_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_root_pass).asc)
 else
-PKI_ROOT_PASSWD := $(shell uuidgen)
+PKI_ROOT_PASSWD := $(shell uuidgen -r)
 endif
 
 ifneq ($(wildcard $(pki_signing_pass).asc),)
 PKI_SIGNING_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_signing_pass).asc)
 else
-PKI_SIGNING_PASSWD := $(shell uuidgen)
+PKI_SIGNING_PASSWD := $(shell uuidgen -r)
 endif
 
 ifneq ($(wildcard $(pki_server_pass).asc),)
 PKI_SERVER_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_server_pass).asc)
 else
-PKI_SERVER_PASSWD := $(shell uuidgen)
+PKI_SERVER_PASSWD := $(shell uuidgen -r)
 endif
 
 define encrypt_file
-gpg --encrypt --no-options --no-greeting --armor --recipient=$(gpg_key) $(1) && shred -u $(1)
+gpg --encrypt --no-options --no-greeting --armor --recipient=$(GPG_KEY) $(1) && shred -u $(1)
 endef
 
 define decrypt_text
