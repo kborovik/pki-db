@@ -155,19 +155,19 @@ pki_server_pass := etc/server
 ifneq ($(wildcard $(pki_root_pass).asc),)
 PKI_ROOT_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_root_pass).asc)
 else
-PKI_ROOT_PASSWD := $(shell gpg --gen-random --armor 1 64)
+PKI_ROOT_PASSWD := $(call gen_pass)
 endif
 
 ifneq ($(wildcard $(pki_signing_pass).asc),)
 PKI_SIGNING_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_signing_pass).asc)
 else
-PKI_SIGNING_PASSWD := $(shell gpg --gen-random --armor 1 64)
+PKI_SIGNING_PASSWD := $(call gen_pass)
 endif
 
 ifneq ($(wildcard $(pki_server_pass).asc),)
 PKI_SERVER_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_server_pass).asc)
 else
-PKI_SERVER_PASSWD := $(shell uuidgen)
+PKI_SERVER_PASSWD := $(call gen_pass)
 endif
 
 define encrypt_file
@@ -178,15 +178,19 @@ define decrypt_text
 gpg --decrypt --no-options --no-greeting --quiet $(1).asc
 endef
 
+define gen_pass
+gpg --gen-random --armor 1 64 | tr -d /=+ | cut -c -32
+endef
+
 secrets-encrypt: secrets-new
 	$(call encrypt_file,$(pki_root_pass))
 	$(call encrypt_file,$(pki_signing_pass))
 	$(call encrypt_file,$(pki_server_pass))
 
 secrets-new: $(dirs)
-	gpg --gen-random --armor 1 64 >| $(pki_root_pass)
-	gpg --gen-random --armor 1 64 >| $(pki_signing_pass)
-	uuidgen >| $(pki_server_pass)
+	$(call gen_pass) >| $(pki_root_pass)
+	$(call gen_pass) >| $(pki_signing_pass)
+	$(call gen_pass) >| $(pki_server_pass)
 
 ###############################################################################
 # Errors Check
