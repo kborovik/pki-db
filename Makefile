@@ -19,14 +19,14 @@ all: settings prompt-create root-crt signing-crt server-crt
 new: clean secrets-encrypt root-db signing-db
 
 clean: prompt-destroy
-	-rm -rf ca crl certs .initialized env/*.asc
+	-rm -rf ca crl certs .initialized etc/*.asc
 
 settings: .initialized
 	echo "GPG_KEY=$(GPG_KEY)"
 	echo "PKI_CN=$(PKI_CN)"
 	echo "PKI_SAN=$(PKI_SAN)"
 
-dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs env
+dirs := ca/root-ca/private ca/root-ca/db ca/signing-ca/private ca/signing-ca/db certs
 
 $(dirs):
 	mkdir -p $@
@@ -148,26 +148,26 @@ show-p12:
 # PGP Secrets
 ###############################################################################
 
-pki_root_pass := env/PKI_ROOT_PASSWD
-pki_signing_pass := env/PKI_SIGNING_PASSWD
-pki_server_pass := env/PKI_SERVER_PASSWD
+pki_root_pass := etc/root-ca
+pki_signing_pass := etc/signing-ca
+pki_server_pass := etc/server
 
 ifneq ($(wildcard $(pki_root_pass).asc),)
 PKI_ROOT_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_root_pass).asc)
 else
-PKI_ROOT_PASSWD := $(shell uuidgen -r)
+PKI_ROOT_PASSWD := $(shell gpg --gen-random --armor 1 64)
 endif
 
 ifneq ($(wildcard $(pki_signing_pass).asc),)
 PKI_SIGNING_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_signing_pass).asc)
 else
-PKI_SIGNING_PASSWD := $(shell uuidgen -r)
+PKI_SIGNING_PASSWD := $(shell gpg --gen-random --armor 1 64)
 endif
 
 ifneq ($(wildcard $(pki_server_pass).asc),)
 PKI_SERVER_PASSWD := $(shell gpg --decrypt --no-options --no-greeting --quiet $(pki_server_pass).asc)
 else
-PKI_SERVER_PASSWD := $(shell uuidgen -r)
+PKI_SERVER_PASSWD := $(shell uuidgen)
 endif
 
 define encrypt_file
@@ -184,8 +184,8 @@ secrets-encrypt: secrets-new
 	$(call encrypt_file,$(pki_server_pass))
 
 secrets-new: $(dirs)
-	uuidgen >| $(pki_root_pass)
-	uuidgen >| $(pki_signing_pass)
+	gpg --gen-random --armor 1 64 >| $(pki_root_pass)
+	gpg --gen-random --armor 1 64 >| $(pki_signing_pass)
 	uuidgen >| $(pki_server_pass)
 
 ###############################################################################
