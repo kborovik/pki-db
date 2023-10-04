@@ -222,18 +222,6 @@ ifndef PKI_SAN
 $(error Set PKI_SAN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
 endif
 
-ifeq ($(strip $(PKI_ROOT_PASSWD)),)
-$(error PKI_ROOT_PASSWD is not set <==)
-endif
-
-ifeq ($(strip $(PKI_SIGNING_PASSWD)),)
-$(error PKI_SIGNING_PASSWD is not set <==)
-endif
-
-ifeq ($(strip $(PKI_SERVER_PASSWD)),)
-$(error PKI_SERVER_PASSWD is not set <==)
-endif
-
 ifeq ($(shell which openssl),)
 $(error Missing command 'openssl'. https://www.openssl.org/)
 endif
