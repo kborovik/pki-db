@@ -146,6 +146,7 @@ show-p12:
 ###############################################################################
 # General Targets
 ###############################################################################
+.PHONY: init_files init db root signing server
 
 init_files := $(root_asc) $(root_key) $(root_csr) $(root_crt) $(signing_asc) $(signing_key) $(signing_csr) $(signing_crt) $(root_ca) $(server_asc) $(server_key) $(server_csr) $(server_crt) $(server_p12)
 
@@ -155,8 +156,6 @@ init_files := $(root_asc) $(root_key) $(root_csr) $(root_crt) $(signing_asc) $(s
 		test -f $${file} && touch $${file} && echo $${file} && sleep 1
 	done
 	touch $(@)
-
-.PHONY: init db root signing server
 
 init: .initialized
 
