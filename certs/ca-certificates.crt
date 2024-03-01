@@ -5,44 +5,44 @@ Certificate:
         Signature Algorithm: ED25519
         Issuer: DC=ca, DC=lab5, O=Lab5 DevOps Inc., OU=www.lab5.ca, CN=Lab5 DevOps Inc. Root CA
         Validity
-            Not Before: Oct  4 14:11:45 2023 GMT
-            Not After : Oct  3 14:11:45 2033 GMT
+            Not Before: Mar  1 00:55:08 2024 GMT
+            Not After : Mar  1 00:55:08 2034 GMT
         Subject: DC=ca, DC=lab5, O=Lab5 DevOps Inc., OU=www.lab5.ca, CN=Lab5 DevOps Inc. Root CA
         Subject Public Key Info:
             Public Key Algorithm: ED25519
                 ED25519 Public-Key:
                 pub:
-                    a3:dc:0e:6e:59:ab:fc:82:16:c3:c7:9d:e7:4e:ca:
-                    19:17:d2:bf:c2:93:78:fc:ac:f6:f5:c9:1c:4a:11:
-                    94:a3
+                    6e:c7:1f:d0:4c:d0:7a:60:15:c1:93:85:50:cd:d2:
+                    66:84:3b:13:43:4c:a3:8f:c9:7d:6a:a5:95:18:5a:
+                    a5:6a
         X509v3 extensions:
             X509v3 Key Usage: critical
                 Certificate Sign, CRL Sign
             X509v3 Basic Constraints: critical
                 CA:TRUE
             X509v3 Subject Key Identifier: 
-                B1:0D:26:F9:C8:C0:53:2E:64:30:10:5E:F4:57:21:B8:20:F3:A1:03
+                4D:68:8E:97:E9:DE:0D:7E:94:BA:6E:DC:9B:75:BF:82:2A:84:AE:3E
             X509v3 Authority Key Identifier: 
-                B1:0D:26:F9:C8:C0:53:2E:64:30:10:5E:F4:57:21:B8:20:F3:A1:03
+                4D:68:8E:97:E9:DE:0D:7E:94:BA:6E:DC:9B:75:BF:82:2A:84:AE:3E
     Signature Algorithm: ED25519
     Signature Value:
-        f6:af:bb:fa:be:8d:17:f4:86:22:5e:de:34:eb:21:a3:d0:aa:
-        db:f3:ab:65:c9:2a:29:70:5b:93:1e:ea:60:07:64:a2:b1:79:
-        76:93:25:a8:53:35:56:3f:7e:fc:ec:74:9b:a1:67:c7:09:4c:
-        b6:e1:80:c7:c1:11:8f:02:82:0f
+        4c:df:19:3d:a5:8e:d1:7b:65:61:51:c0:b5:02:ec:73:ea:ca:
+        ca:87:c3:62:b2:6a:1b:7e:0c:b7:20:43:cb:9d:8d:19:da:d7:
+        17:4a:d0:ba:4a:4b:98:bd:56:bc:70:0f:1d:34:c0:8b:2d:da:
+        70:8f:8f:0a:ac:d7:18:52:48:0d
 -----BEGIN CERTIFICATE-----
 MIICDjCCAcCgAwIBAgIBATAFBgMrZXAwfjESMBAGCgmSJomT8ixkARkWAmNhMRQw
 EgYKCZImiZPyLGQBGRYEbGFiNTEZMBcGA1UECgwQTGFiNSBEZXZPcHMgSW5jLjEU
 MBIGA1UECwwLd3d3LmxhYjUuY2ExITAfBgNVBAMMGExhYjUgRGV2T3BzIEluYy4g
-Um9vdCBDQTAeFw0yMzEwMDQxNDExNDVaFw0zMzEwMDMxNDExNDVaMH4xEjAQBgoJ
+Um9vdCBDQTAeFw0yNDAzMDEwMDU1MDhaFw0zNDAzMDEwMDU1MDhaMH4xEjAQBgoJ
 kiaJk/IsZAEZFgJjYTEUMBIGCgmSJomT8ixkARkWBGxhYjUxGTAXBgNVBAoMEExh
 YjUgRGV2T3BzIEluYy4xFDASBgNVBAsMC3d3dy5sYWI1LmNhMSEwHwYDVQQDDBhM
-YWI1IERldk9wcyBJbmMuIFJvb3QgQ0EwKjAFBgMrZXADIQCj3A5uWav8ghbDx53n
-TsoZF9K/wpN4/Kz29ckcShGUo6NjMGEwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB
-/wQFMAMBAf8wHQYDVR0OBBYEFLENJvnIwFMuZDAQXvRXIbgg86EDMB8GA1UdIwQY
-MBaAFLENJvnIwFMuZDAQXvRXIbgg86EDMAUGAytlcANBAPavu/q+jRf0hiJe3jTr
-IaPQqtvzq2XJKilwW5Me6mAHZKKxeXaTJahTNVY/fvzsdJuhZ8cJTLbhgMfBEY8C
-gg8=
+YWI1IERldk9wcyBJbmMuIFJvb3QgQ0EwKjAFBgMrZXADIQBuxx/QTNB6YBXBk4VQ
+zdJmhDsTQ0yjj8l9aqWVGFqlaqNjMGEwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB
+/wQFMAMBAf8wHQYDVR0OBBYEFE1ojpfp3g1+lLpu3Jt1v4IqhK4+MB8GA1UdIwQY
+MBaAFE1ojpfp3g1+lLpu3Jt1v4IqhK4+MAUGAytlcANBAEzfGT2ljtF7ZWFRwLUC
+7HPqysqHw2Kyaht+DLcgQ8udjRna1xdK0LpKS5i9VrxwDx00wIst2nCPjwqs1xhS
+SA0=
 -----END CERTIFICATE-----
 Certificate:
     Data:
@@ -51,42 +51,42 @@ Certificate:
         Signature Algorithm: ED25519
         Issuer: DC=ca, DC=lab5, O=Lab5 DevOps Inc., OU=www.lab5.ca, CN=Lab5 DevOps Inc. Root CA
         Validity
-            Not Before: Oct  4 14:11:54 2023 GMT
-            Not After : Oct  3 14:11:54 2033 GMT
+            Not Before: Mar  1 00:55:11 2024 GMT
+            Not After : Mar  1 00:55:11 2034 GMT
         Subject: DC=ca, DC=lab5, O=Lab5 DevOps Inc., OU=www.lab5.ca, CN=Lab5 DevOps Inc. Issuing CA
         Subject Public Key Info:
             Public Key Algorithm: ED25519
                 ED25519 Public-Key:
                 pub:
-                    8b:6c:f4:7c:f0:c0:d9:59:59:a2:3c:d6:29:d3:b5:
-                    1f:a1:5d:2d:c9:de:95:3e:95:f4:4b:b6:52:5a:42:
-                    a4:3f
+                    76:8d:91:80:b3:09:ce:0c:d9:18:91:39:20:21:91:
+                    2d:38:40:82:84:d1:1a:a2:b4:7d:28:b8:c0:30:46:
+                    57:b1
         X509v3 extensions:
             X509v3 Key Usage: critical
                 Certificate Sign, CRL Sign
             X509v3 Basic Constraints: critical
                 CA:TRUE, pathlen:0
             X509v3 Subject Key Identifier: 
-                50:F5:EC:BC:A2:71:1F:E8:64:D9:A3:2F:D1:EF:FB:5E:D4:64:63:3F
+                33:61:BC:1C:21:8C:2B:EF:6E:12:E8:CE:92:EA:5D:DA:9D:35:22:BA
             X509v3 Authority Key Identifier: 
-                B1:0D:26:F9:C8:C0:53:2E:64:30:10:5E:F4:57:21:B8:20:F3:A1:03
+                4D:68:8E:97:E9:DE:0D:7E:94:BA:6E:DC:9B:75:BF:82:2A:84:AE:3E
     Signature Algorithm: ED25519
     Signature Value:
-        5e:75:14:92:69:7e:42:2f:14:f3:d1:c2:3b:c5:d0:a1:03:c0:
-        b8:5c:67:3f:7f:e7:d1:a5:55:ca:06:01:53:e4:a0:89:7e:ae:
-        8c:8d:7b:48:5b:82:b0:c0:bd:f3:24:3b:8d:b4:5b:f8:1d:1f:
-        62:a1:e3:1b:df:08:6b:9f:1d:06
+        85:c4:5a:2c:cd:6c:8c:67:52:97:37:e8:ac:a2:7a:cd:ab:4e:
+        50:2e:5a:3c:55:58:41:e4:20:46:84:fe:91:53:b3:df:cc:cc:
+        2c:83:4d:35:a6:fb:da:dd:76:99:7b:ed:c5:84:b1:dc:ba:55:
+        dd:37:2a:2d:02:0a:79:d3:3b:0f
 -----BEGIN CERTIFICATE-----
 MIICFTCCAcegAwIBAgIBAjAFBgMrZXAwfjESMBAGCgmSJomT8ixkARkWAmNhMRQw
 EgYKCZImiZPyLGQBGRYEbGFiNTEZMBcGA1UECgwQTGFiNSBEZXZPcHMgSW5jLjEU
 MBIGA1UECwwLd3d3LmxhYjUuY2ExITAfBgNVBAMMGExhYjUgRGV2T3BzIEluYy4g
-Um9vdCBDQTAeFw0yMzEwMDQxNDExNTRaFw0zMzEwMDMxNDExNTRaMIGBMRIwEAYK
+Um9vdCBDQTAeFw0yNDAzMDEwMDU1MTFaFw0zNDAzMDEwMDU1MTFaMIGBMRIwEAYK
 CZImiZPyLGQBGRYCY2ExFDASBgoJkiaJk/IsZAEZFgRsYWI1MRkwFwYDVQQKDBBM
 YWI1IERldk9wcyBJbmMuMRQwEgYDVQQLDAt3d3cubGFiNS5jYTEkMCIGA1UEAwwb
-TGFiNSBEZXZPcHMgSW5jLiBJc3N1aW5nIENBMCowBQYDK2VwAyEAi2z0fPDA2VlZ
-ojzWKdO1H6FdLcnelT6V9Eu2UlpCpD+jZjBkMA4GA1UdDwEB/wQEAwIBBjASBgNV
-HRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQWBBRQ9ey8onEf6GTZoy/R7/te1GRjPzAf
-BgNVHSMEGDAWgBSxDSb5yMBTLmQwEF70VyG4IPOhAzAFBgMrZXADQQBedRSSaX5C
-LxTz0cI7xdChA8C4XGc/f+fRpVXKBgFT5KCJfq6MjXtIW4KwwL3zJDuNtFv4HR9i
-oeMb3whrnx0G
+TGFiNSBEZXZPcHMgSW5jLiBJc3N1aW5nIENBMCowBQYDK2VwAyEAdo2RgLMJzgzZ
+GJE5ICGRLThAgoTRGqK0fSi4wDBGV7GjZjBkMA4GA1UdDwEB/wQEAwIBBjASBgNV
+HRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQWBBQzYbwcIYwr724S6M6S6l3anTUiujAf
+BgNVHSMEGDAWgBRNaI6X6d4NfpS6btybdb+CKoSuPjAFBgMrZXADQQCFxFoszWyM
+Z1KXN+isonrNq05QLlo8VVhB5CBGhP6RU7PfzMwsg001pvva3XaZe+3FhLHculXd
+NyotAgp50zsP
 -----END CERTIFICATE-----

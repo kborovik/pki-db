@@ -1,6 +1,6 @@
 # TLS (SSL) PKI for DevOps
 
-The repository helps to create and test a Certificate Signing Request (CSR).
+The repository helps to create and test a Certificate Signing Request (CSR) with OpenSSL.
 
 ## Problem
 
@@ -15,7 +15,7 @@ This repo generates certificate package:
 - Root CA certificate `ca-certificates.crt`
 - Test Host certificate `host.domain.com.crt`
 - Test Host CSR `host.domain.com.csr`
-- Test Host encrypted private key `host.domain.com.enc`
+- Test Host encrypted private key `host.domain.com.key`
 - Test Host P12 (PFX) bundle `host.domain.com.p12`
 
 # Requirements
@@ -41,8 +41,8 @@ vim Makefile
 - Update `[ ca_dn ]` information
 
 ```
-vim etc/root-ca.conf
-vim etc/signing-ca.conf
+vim etc/root.conf
+vim etc/signing.conf
 vim etc/server.conf
 ```
 
@@ -63,7 +63,7 @@ source hosts/new.host.com
 - Initialize new PKI DB
 
 ```
-make new
+make clean
 ```
 
 ```
@@ -154,7 +154,7 @@ certs/
 ├── ca-certificates.crt
 ├── new.host.com.crt
 ├── new.host.com.csr
-├── new.host.com.enc
+├── new.host.com.key
 └── new.host.com.p12
 
 0 directories, 5 files
