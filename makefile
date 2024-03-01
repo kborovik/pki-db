@@ -142,6 +142,8 @@ $(server_crt): $(signing_crt) $(server_csr)
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
 	openssl pkcs12 -export -legacy -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(PKI_CN) -passout pass:$(shell gpg -dq $(server_asc)) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
+.PHONY: show-key show-csr show-crt show-p12
+
 show-key:
 	openssl pkey -in $(server_key) -passin pass:$(shell gpg -dq $(server_asc))
 
