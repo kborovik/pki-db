@@ -17,7 +17,9 @@ pkey_algorithm ?= ED25519
 # General Targets
 ###############################################################################
 
-all: settings prompt-create db root signing server
+.PHONY: default clean settings
+
+default: settings prompt-create db root signing server
 
 clean: prompt-destroy
 	-rm -rf ca crl certs .initialized
@@ -31,21 +33,6 @@ dirs := ca/root/db ca/signing/db certs
 
 $(dirs):
 	mkdir -p $(@)
-
-.initialized:
-	$(info ==> initializing PKI DB <==)
-	test -f $(root_key) && touch $(root_key) && sleep 1
-	test -f $(root_csr) && touch $(root_csr) && sleep 1
-	test -f $(root_crt) && touch $(root_crt) && sleep 1
-	test -f $(signing_key) && touch $(signing_key) && sleep 1
-	test -f $(signing_csr) && touch $(signing_csr) && sleep 1
-	test -f $(signing_crt) && touch $(signing_crt) && sleep 1
-	test -f $(root_ca) && touch $(root_ca) && sleep 1
-	test -f $(server_key) && touch $(server_key) && sleep 1
-	test -f $(server_csr) && touch $(server_csr) && sleep 1
-	test -f $(server_crt) && touch $(server_crt) && sleep 1
-	test -f $(server_p12) && touch $(server_p12) && sleep 1
-	touch $(@)
 
 ###############################################################################
 # Root PKI
@@ -160,7 +147,22 @@ show-p12:
 # General Targets
 ###############################################################################
 
-.PHONY: db root signing server
+.initialized:
+	$(info ==> initializing PKI DB <==)
+	test -f $(root_key) && touch $(root_key) && sleep 1
+	test -f $(root_csr) && touch $(root_csr) && sleep 1
+	test -f $(root_crt) && touch $(root_crt) && sleep 1
+	test -f $(signing_key) && touch $(signing_key) && sleep 1
+	test -f $(signing_csr) && touch $(signing_csr) && sleep 1
+	test -f $(signing_crt) && touch $(signing_crt) && sleep 1
+	test -f $(root_ca) && touch $(root_ca) && sleep 1
+	test -f $(server_key) && touch $(server_key) && sleep 1
+	test -f $(server_csr) && touch $(server_csr) && sleep 1
+	test -f $(server_crt) && touch $(server_crt) && sleep 1
+	test -f $(server_p12) && touch $(server_p12) && sleep 1
+	touch $(@)
+
+.PHONY: init db root signing server
 
 init: .initialized
 
@@ -199,33 +201,10 @@ endef
 # Demo
 ###############################################################################
 
-.PHONY: demo record
+.PHONY: demo-record
 
-demo:
-	$(call header,"Remove Old PKI Data")
-	$(MAKE) clean
-	$(call header,"Show Directory Structure")
-	tree
-	$(call pause)
-	$(call header,"Create New Certificates Authority and Server Certificates")
-	$(MAKE) all
-	$(call header,"Show Directory Structure")
-	tree
-	$(call pause)
-	$(call header,"Show Server Private Key")
-	$(MAKE) show-key
-	$(call pause)
-	$(call header,"Show Server Certificate Signing Request")
-	$(MAKE) show-csr
-	$(call pause)
-	$(call header,"Show Server Certificate")
-	$(MAKE) show-crt
-	$(call pause)
-	$(call header,"Show Server PKCS")
-	$(MAKE) show-p12
-
-record:
-	asciinema rec -t "pki-db make" -c "make demo"
+demo-record:
+	asciinema rec -t "pki-db make"
 
 ###############################################################################
 # Prompts
