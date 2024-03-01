@@ -5,6 +5,7 @@
 ###############################################################################
 # Variables
 ###############################################################################
+
 GPG_KEY ?= 79A09C51CF531E16444D6871B59466C2C0CCF0BF
 PKI_CN ?=
 PKI_SAN ?=
@@ -13,8 +14,9 @@ PKI_SAN ?=
 pkey_algorithm ?= ED25519
 
 ###############################################################################
-# General PKI
+# General Targets
 ###############################################################################
+
 all: settings prompt-create db root signing server
 
 clean: prompt-destroy
@@ -48,6 +50,7 @@ $(dirs):
 ###############################################################################
 # Root PKI
 ###############################################################################
+
 root_db := ca/root/db/root.db ca/root/db/root.db.attr
 root_crl := ca/root/db/root.crt.srl ca/root/db/root.crl.srl
 root_asc := ca/root.asc
@@ -77,6 +80,7 @@ $(root_crt): $(root_csr)
 ###############################################################################
 # Signing PKI
 ###############################################################################
+
 signing_db := ca/signing/db/signing.db ca/signing/db/signing.db.attr
 signing_crl := ca/signing/db/signing.crt.srl ca/signing/db/signing.crl.srl
 signing_asc := ca/signing.asc
@@ -106,6 +110,7 @@ $(signing_crt): $(signing_csr)
 ###############################################################################
 # CA certificates
 ###############################################################################
+
 root_ca := certs/ca-certificates.crt
 
 $(root_ca): $(root_crt) $(signing_crt)
@@ -114,6 +119,7 @@ $(root_ca): $(root_crt) $(signing_crt)
 ###############################################################################
 # Servers PKI
 ###############################################################################
+
 server_asc := certs/$(PKI_CN).asc
 server_key := certs/$(PKI_CN).key
 server_csr := certs/$(PKI_CN).csr
@@ -151,6 +157,9 @@ show-p12:
 ###############################################################################
 # General Targets
 ###############################################################################
+
+.PHONY: db root signing server
+
 init: .initialized
 
 db: $(root_db) $(root_crl) $(signing_db) $(signing_crl)
@@ -162,8 +171,9 @@ signing: $(signing_crt)
 server: $(root_ca) $(server_crt) $(server_p12)
 
 ###############################################################################
-# PGP Secrets
+# Functions
 ###############################################################################
+
 define cert_clean
 openssl x509 -outform PEM -in $(1) -out $(1)
 endef
@@ -186,6 +196,9 @@ endef
 ###############################################################################
 # Demo
 ###############################################################################
+
+.PHONY: demo record
+
 demo:
 	$(call header,"Remove Old PKI Data")
 	$(MAKE) clean
@@ -213,8 +226,11 @@ record:
 	asciinema rec -t "pki-db make" -c "make demo"
 
 ###############################################################################
-# Errors Check
+# Prompts
 ###############################################################################
+
+.PHONY: prompt-destroy prompt-create
+
 prompt-destroy:
 	echo "######################################################################"
 	echo "# WARNING! - All TLS private keys will be destroyed!"
@@ -233,6 +249,10 @@ prompt-create:
 	  echo "Deployment aborted"
 	  exit 100
 	fi
+
+###############################################################################
+# Errors Check
+###############################################################################
 
 ifndef PKI_CN
 $(error Set PKI_CN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
