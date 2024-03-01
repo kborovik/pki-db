@@ -1,51 +1,15 @@
-Certificate:
-    Data:
-        Version: 3 (0x2)
-        Serial Number: 1 (0x1)
-        Signature Algorithm: ED25519
-        Issuer: DC=ca, DC=lab5, O=Lab5 DevOps Inc., OU=www.lab5.ca, CN=Lab5 DevOps Inc. Issuing CA
-        Validity
-            Not Before: Mar  1 00:55:12 2024 GMT
-            Not After : Mar  1 00:55:12 2034 GMT
-        Subject: DC=ca, DC=lab5, O=Lab5 DevOps Inc., OU=www.lab5.ca, CN=www.lab5.ca
-        Subject Public Key Info:
-            Public Key Algorithm: ED25519
-                ED25519 Public-Key:
-                pub:
-                    f6:a0:11:4f:8d:65:a0:2d:dc:b0:13:06:ba:55:60:
-                    b1:4a:bd:a1:ed:dc:9b:4d:16:a7:3c:03:ca:b4:ae:
-                    17:0c
-        X509v3 extensions:
-            X509v3 Key Usage: critical
-                Digital Signature, Key Encipherment
-            X509v3 Basic Constraints: 
-                CA:FALSE
-            X509v3 Extended Key Usage: 
-                TLS Web Server Authentication, TLS Web Client Authentication
-            X509v3 Subject Key Identifier: 
-                6B:CD:B1:C3:2C:C7:27:47:C1:19:50:C2:11:C3:5B:B1:04:13:68:7C
-            X509v3 Authority Key Identifier: 
-                33:61:BC:1C:21:8C:2B:EF:6E:12:E8:CE:92:EA:5D:DA:9D:35:22:BA
-            X509v3 Subject Alternative Name: 
-                DNS:www.lab5.ca, DNS:log.lab5.ca, IP Address:10.99.99.100, IP Address:127.0.0.1
-    Signature Algorithm: ED25519
-    Signature Value:
-        4e:57:c1:a8:1f:8f:6a:04:7d:9e:04:be:3d:7c:38:dc:6c:6b:
-        3a:e1:56:26:5a:e9:2f:1e:c3:3b:8e:aa:81:5d:e3:e5:aa:7a:
-        2e:88:0f:2a:b1:12:58:d6:dd:ee:d8:cf:5f:a5:b0:e3:66:13:
-        16:44:89:c0:03:9f:79:e5:a2:09
 -----BEGIN CERTIFICATE-----
 MIICUTCCAgOgAwIBAgIBATAFBgMrZXAwgYExEjAQBgoJkiaJk/IsZAEZFgJjYTEU
 MBIGCgmSJomT8ixkARkWBGxhYjUxGTAXBgNVBAoMEExhYjUgRGV2T3BzIEluYy4x
 FDASBgNVBAsMC3d3dy5sYWI1LmNhMSQwIgYDVQQDDBtMYWI1IERldk9wcyBJbmMu
-IElzc3VpbmcgQ0EwHhcNMjQwMzAxMDA1NTEyWhcNMzQwMzAxMDA1NTEyWjBxMRIw
+IElzc3VpbmcgQ0EwHhcNMjQwMzAxMTUxNDM2WhcNMzQwMzAxMTUxNDM2WjBxMRIw
 EAYKCZImiZPyLGQBGRYCY2ExFDASBgoJkiaJk/IsZAEZFgRsYWI1MRkwFwYDVQQK
 DBBMYWI1IERldk9wcyBJbmMuMRQwEgYDVQQLDAt3d3cubGFiNS5jYTEUMBIGA1UE
-AwwLd3d3LmxhYjUuY2EwKjAFBgMrZXADIQD2oBFPjWWgLdywEwa6VWCxSr2h7dyb
-TRanPAPKtK4XDKOBrjCBqzAOBgNVHQ8BAf8EBAMCBaAwCQYDVR0TBAIwADAdBgNV
-HSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwHQYDVR0OBBYEFGvNscMsxydHwRlQ
-whHDW7EEE2h8MB8GA1UdIwQYMBaAFDNhvBwhjCvvbhLozpLqXdqdNSK6MC8GA1Ud
+AwwLd3d3LmxhYjUuY2EwKjAFBgMrZXADIQBFb010P2J+KRqI7bQkIcjzaJDzp0pP
+P8RrrfC/mPpIf6OBrjCBqzAOBgNVHQ8BAf8EBAMCBaAwCQYDVR0TBAIwADAdBgNV
+HSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwHQYDVR0OBBYEFE1Dl2yWsk7zXcf9
+bLS9HJxmXF24MB8GA1UdIwQYMBaAFCbMLr5m7XynUEXNRMY04mEk+mreMC8GA1Ud
 EQQoMCaCC3d3dy5sYWI1LmNhggtsb2cubGFiNS5jYYcECmNjZIcEfwAAATAFBgMr
-ZXADQQBOV8GoH49qBH2eBL49fDjcbGs64VYmWukvHsM7jqqBXePlqnouiA8qsRJY
-1t3u2M9fpbDjZhMWRInAA5955aIJ
+ZXADQQC9zkgk9ZxaztQN9Is82+Xy7dxLB7KKUKSLvk5YuVBCoW+sDt1nt6kD68Qu
+FmWvb3rnxmbbB/87/oyRgjOaQZ0N
 -----END CERTIFICATE-----

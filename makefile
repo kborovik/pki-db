@@ -28,7 +28,7 @@ settings:
 dirs := ca/root/db ca/signing/db certs
 
 $(dirs):
-	mkdir -p $@
+	mkdir -p $(@)
 
 .initialized:
 	$(info ==> initializing PKI DB <==)
@@ -43,9 +43,7 @@ $(dirs):
 	test -f $(server_csr) && touch $(server_csr) && sleep 1
 	test -f $(server_crt) && touch $(server_crt) && sleep 1
 	test -f $(server_p12) && touch $(server_p12) && sleep 1
-	touch $@
-
-init: .initialized
+	touch $(@)
 
 ###############################################################################
 # Root PKI
@@ -58,22 +56,23 @@ root_csr := ca/root.csr
 root_crt := ca/root.crt
 
 $(root_db): $(dirs)
-	cp /dev/null $@
+	touch $(@)
 
 $(root_crl): $(dirs)
-	echo 01 > $@
+	echo 01 > $(@)
 
 $(root_asc):
-	gpg --gen-random --armor 1 64 | tr -d '/=+[:space:]' | gpg -e -r ${GPG_KEY} -o $@
+	$(call gen_pass) > $(@)
 
 $(root_key): $(root_asc)
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(call gpg -dq ${root_asc}) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(shell gpg -dq $(root_asc)) -out $(@)
 
 $(root_csr): $(root_key)
-	openssl req -new -config etc/root.conf -key $(root_key) -passin pass:$(call gpg -dq ${root_asc}) -out $@
+	openssl req -new -config etc/root.conf -key $(root_key) -passin pass:$(shell gpg -dq $(root_asc)) -out $(@)
 
 $(root_crt): $(root_csr)
-	openssl ca -selfsign -config etc/root.conf -in $(root_csr) -extensions root_ca_ext -passin pass:$(call gpg -dq ${root_asc}) -out $@
+	openssl ca -selfsign -config etc/root.conf -in $(root_csr) -extensions root_ca_ext -passin pass:$(shell gpg -dq $(root_asc)) -out $(@)
+	$(call cert_clean,$(@))
 
 ###############################################################################
 # Signing PKI
@@ -86,22 +85,23 @@ signing_csr := ca/signing.csr
 signing_crt := ca/signing.crt
 
 $(signing_db): $(dirs)
-	cp /dev/null $@
+	touch $(@)
 
 $(signing_crl): $(signing_db)
-	echo 01 > $@
+	echo 01 > $(@)
 
 $(signing_asc): $(root_crt)
-	gpg --gen-random --armor 1 64 | tr -d '/=+[:space:]' | gpg -e -r ${GPG_KEY} -o $@
+	$(call gen_pass) > $(@)
 
 $(signing_key): $(signing_asc)
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(call gpg -dq ${signing_asc}) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(shell gpg -dq $(signing_asc)) -out $(@)
 
 $(signing_csr): $(signing_key)
-	openssl req -new -config etc/signing.conf -key $(signing_key) -passin pass:$(call gpg -dq ${signing_asc}) -out $@
+	openssl req -new -config etc/signing.conf -key $(signing_key) -passin pass:$(shell gpg -dq $(signing_asc)) -out $(@)
 
 $(signing_crt): $(signing_csr)
-	openssl ca -config etc/root.conf -in $(signing_csr) -extensions signing_ca_ext -passin pass:$(call gpg -dq ${signing_asc}) -out $@
+	openssl ca -config etc/root.conf -in $(signing_csr) -extensions signing_ca_ext -passin pass:$(shell gpg -dq $(root_asc)) -out $(@)
+	$(call cert_clean,$(@))
 
 ###############################################################################
 # CA certificates
@@ -109,7 +109,7 @@ $(signing_crt): $(signing_csr)
 root_ca := certs/ca-certificates.crt
 
 $(root_ca): $(root_crt) $(signing_crt)
-	cat $(root_crt) $(signing_crt) > $@
+	cat $(root_crt) $(signing_crt) > $(@)
 
 ###############################################################################
 # Servers PKI
@@ -121,22 +121,23 @@ server_crt := certs/$(PKI_CN).crt
 server_p12 := certs/$(PKI_CN).p12
 
 $(server_asc):
-	gpg --gen-random --armor 1 64 | tr -d '/=+[:space:]' | cut -c -32 | gpg -e -r ${GPG_KEY} -o $@
+	$(call gen_pass) > $(@)
 
 $(server_key): $(server_asc)
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(call gpg -dq ${server_asc}) -out $@
+	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
 $(server_csr): $(server_key)
-	openssl req -new -config etc/server.conf -key $(server_key) -passin pass:$(call gpg -dq ${server_asc}) -out $@
+	openssl req -new -config etc/server.conf -key $(server_key) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
 $(server_crt): $(signing_crt) $(server_csr)
-	openssl ca -config etc/signing.conf -in $(server_csr) -extensions server_ext -passin pass:$(call gpg -dq ${server_asc}) -out $@
+	openssl ca -config etc/signing.conf -in $(server_csr) -extensions server_ext -passin pass:$(shell gpg -dq $(signing_asc)) -out $(@)
+	$(call cert_clean,$(@))
 
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
-	openssl pkcs12 -export -legacy -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(PKI_CN) -passout pass:$(call gpg -dq ${server_asc}) -passin pass:$(call gpg -dq ${server_asc}) -out $@
+	openssl pkcs12 -export -legacy -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(PKI_CN) -passout pass:$(shell gpg -dq $(server_asc)) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
 show-key:
-	openssl pkey -in $(server_key) -passin pass:$(call gpg -dq ${server_asc})
+	openssl pkey -in $(server_key) -passin pass:$(shell gpg -dq $(server_asc))
 
 show-csr:
 	openssl req -text -noout -in $(server_csr)
@@ -145,11 +146,13 @@ show-crt:
 	openssl x509 -text -noout -in $(server_crt)
 
 show-p12:
-	openssl pkcs12 -noenc -legacy -info -in $(server_p12) -passin 'pass:$(call gpg -dq ${server_asc})'
+	openssl pkcs12 -noenc -legacy -info -in $(server_p12) -passin 'pass:$(shell gpg -dq $(server_asc))'
 
 ###############################################################################
 # General Targets
 ###############################################################################
+init: .initialized
+
 db: $(root_db) $(root_crl) $(signing_db) $(signing_crl)
 
 root: $(root_crt)
@@ -161,15 +164,53 @@ server: $(root_ca) $(server_crt) $(server_p12)
 ###############################################################################
 # PGP Secrets
 ###############################################################################
+define cert_clean
+openssl x509 -outform PEM -in $(1) -out $(1)
+endef
+
 define gen_pass
-gpg --gen-random --armor 1 64 | tr -d '/=+[:space:]' | cut -c -32
+gpg --gen-random --armor 1 96 | tr -d '/=+' | cut -c -64 | tr -d '[:space:]' | gpg -e -r $(GPG_KEY)
+endef
+
+define header
+clear
+echo "######################################################################"
+echo "# $(1)"
+echo "######################################################################"
+endef
+
+define pause
+read -p "Press [Enter] to continue..." INP && [ "$${INP}" != "yes" ]
 endef
 
 ###############################################################################
 # Demo
 ###############################################################################
 demo:
-	asciinema rec -t "pki-db make" -c "PAUSE=3 make all"
+	$(call header,"Remove Old PKI Data")
+	$(MAKE) clean
+	$(call header,"Show Directory Structure")
+	tree
+	$(call pause)
+	$(call header,"Create New Certificates Authority and Server Certificates")
+	$(MAKE) all
+	$(call header,"Show Directory Structure")
+	tree
+	$(call pause)
+	$(call header,"Show Server Private Key")
+	$(MAKE) show-key
+	$(call pause)
+	$(call header,"Show Server Certificate Signing Request")
+	$(MAKE) show-csr
+	$(call pause)
+	$(call header,"Show Server Certificate")
+	$(MAKE) show-crt
+	$(call pause)
+	$(call header,"Show Server PKCS")
+	$(MAKE) show-p12
+
+record:
+	asciinema rec -t "pki-db make" -c "make demo"
 
 ###############################################################################
 # Errors Check

@@ -1,14 +1,14 @@
-# TLS (SSL) PKI for DevOps
+# The Lost Art of the Makefile
 
-The repository helps to create and test a Certificate Signing Request (CSR) with OpenSSL.
+This repository uses OpenSSL and GNU Makefile to automate and simplify Certificate Signing Request (CSR) processes.
 
 ## Problem
 
-Corporate CSR process might take hours, days or weeks.
+The Corporate CSR process can take anywhere from hours to weeks to complete.
 
 ## Solution
 
-Before submitting CSR to the corporate PKI create a test certificate to test Subject Alternative Names (SAN) and certificate deployment procedure.
+Test your Subject Alternative Names (SAN) and deployment process using a test certificate before submitting a CSR to the corporate PKI.
 
 This repo generates certificate package:
 
@@ -17,6 +17,10 @@ This repo generates certificate package:
 - Test Host CSR `host.domain.com.csr`
 - Test Host encrypted private key `host.domain.com.key`
 - Test Host P12 (PFX) bundle `host.domain.com.p12`
+
+# Demo
+
+
 
 # Requirements
 
