@@ -44,7 +44,6 @@ $(dirs):
 ###############################################################################
 
 root_db := ca/root/db/root.db ca/root/db/root.db.attr
-root_crl := ca/root/db/root.crt.srl ca/root/db/root.crl.srl
 root_asc := ca/root.asc
 root_key := ca/root.key
 root_csr := ca/root.csr
@@ -71,7 +70,6 @@ $(root_crt): $(root_csr)
 ###############################################################################
 
 signing_db := ca/signing/db/signing.db ca/signing/db/signing.db.attr
-signing_crl := ca/signing/db/signing.crt.srl ca/signing/db/signing.crl.srl
 signing_asc := ca/signing.asc
 signing_key := ca/signing.key
 signing_csr := ca/signing.csr
@@ -79,9 +77,6 @@ signing_crt := ca/signing.crt
 
 $(signing_db): $(dirs)
 	touch $(@)
-
-$(signing_crl): $(signing_db)
-	echo 01 > $(@)
 
 $(signing_asc): $(root_crt)
 	$(call gen_pass,$(pkey_pass_size)) > $(@)
@@ -153,16 +148,19 @@ show-p12:
 ###############################################################################
 .PHONY: init db root signing server
 
-init := $(root_asc) $(root_key) $(root_csr) $(root_crt) $(signing_asc) $(signing_key) $(signing_csr) $(signing_crt) $(root_ca) $(server_asc) $(server_key) $(server_csr) $(server_crt) $(server_p12)
+init_files := $(root_asc) $(root_key) $(root_csr) $(root_crt) $(signing_asc) $(signing_key) $(signing_csr) $(signing_crt) $(root_ca) $(server_asc) $(server_key) $(server_csr) $(server_crt) $(server_p12)
 
 .initialized:
 	$(info ==> initializing PKI DB <==)
-	for file in $(init); do
+	for file in $(init_files); do
 		test -f $${file} && touch $${file} && echo $${file} && sleep 1
 	done
 	touch $(@)
 
-# db: $(root_db) $(root_crl) $(signing_db) $(signing_crl)
+init:
+	rm -rf .initialized
+	$(MAKE) .initialized
+
 db: $(root_db) $(signing_db)
 
 root: $(root_crt)
