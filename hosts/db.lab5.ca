@@ -1,0 +1,7 @@
+#!/bin/sh
+export PKI_CN="db.lab5.ca"
+export PKI_SAN="\
+DNS:db.lab5.ca,\
+DNS:db1.lab5.ca,\
+IP:10.88.88.88,\
+IP:127.0.0.1"

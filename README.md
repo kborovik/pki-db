@@ -86,11 +86,10 @@ make
 
 ```
 ######################################################################
-#
-# Settings:
-# - PKI_CN  = new.host.com
-# - PKI_SAN = DNS:new.host.com,IP:127.0.0.1
-#
+OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
+GPG_KEY=79A09C51CF531E16444D6871B59466C2C0CCF0BF
+PKI_CN=www.lab5.ca
+PKI_SAN=DNS:www.lab5.ca,DNS:log.lab5.ca,IP:10.99.99.100,IP:127.0.0.1
 ######################################################################
 
 Create certificate? (yes/no):
@@ -139,11 +138,10 @@ make
 
 ```
 ######################################################################
-#
-# Settings:
-# - PKI_CN  = new.host.com
-# - PKI_SAN = DNS:new.host.com, IP:127.0.0.1
-#
+OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
+GPG_KEY=79A09C51CF531E16444D6871B59466C2C0CCF0BF
+PKI_CN=db.lab5.ca
+PKI_SAN=DNS:db.lab5.ca,DNS:db1.lab5.ca,IP:10.88.88.88,IP:127.0.0.1
 ######################################################################
 
 Create certificate? (yes/no):
@@ -156,12 +154,24 @@ tree certs/
 ```
 certs/
 ├── ca-certificates.crt
-├── new.host.com.crt
-├── new.host.com.csr
-├── new.host.com.key
-└── new.host.com.p12
+├── db.lab5.ca.asc
+├── db.lab5.ca.crt
+├── db.lab5.ca.csr
+├── db.lab5.ca.key
+├── db.lab5.ca.p12
+├── www.lab5.ca.asc
+├── www.lab5.ca.crt
+├── www.lab5.ca.csr
+├── www.lab5.ca.key
+└── www.lab5.ca.p12
 
-0 directories, 5 files
+0 directories, 11 files
+```
+
+## Show Private Key Password
+
+```
+make show-pass
 ```
 
 ## Decrypt Private Key
