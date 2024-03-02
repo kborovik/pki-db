@@ -165,7 +165,7 @@ root: $(root_crt)
 
 signing: $(signing_crt)
 
-server: $(root_ca) $(server_crt) $(server_p12)
+server: $(root_ca) $(server_crt) $(server_p12) init
 
 ###############################################################################
 # Functions
@@ -177,17 +177,6 @@ endef
 
 define gen_pass
 gpg --gen-random --armor 1 96 | tr -d '/=+' | cut -c -64 | tr -d '[:space:]' | gpg -e -r $(GPG_KEY)
-endef
-
-define header
-clear
-echo "######################################################################"
-echo "# $(1)"
-echo "######################################################################"
-endef
-
-define pause
-read -p "Press [Enter] to continue..." INP && [ "$${INP}" != "yes" ]
 endef
 
 ###############################################################################
