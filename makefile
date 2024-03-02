@@ -167,7 +167,7 @@ root: $(root_crt)
 
 signing: $(signing_crt)
 
-server: $(root_ca) $(server_crt) $(server_p12) .initialized
+server: $(root_ca) $(server_crt) $(server_p12)
 
 ###############################################################################
 # Functions
