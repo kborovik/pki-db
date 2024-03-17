@@ -11,7 +11,7 @@ PKI_CN ?=
 PKI_SAN ?=
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
-pkey_algorithm ?= ED25519
+pkey_algorithm ?= RSA
 pkey_pass_size ?= 64
 
 ###############################################################################
@@ -168,6 +168,31 @@ root: $(root_crt)
 signing: $(signing_crt)
 
 server: $(root_ca) $(server_crt) $(server_p12)
+
+###############################################################################
+# NSSDB
+###############################################################################
+
+nssdb := ~/.pki/nssdb
+
+.PHONY: nssdb-import nssdb-list nssdb-clean
+
+.nssdb-import-ca: $(root_crt) $(signing_crt)
+	certutil -A -n "RootCA" -t "CT,C,C" -i $(root_crt) -d $(nssdb)
+	certutil -A -n "SigningCA" -t "C,C,C" -i $(signing_crt) -d $(nssdb)
+	touch $(@)
+
+nssdb-import: .nssdb-import-ca $(server_p12)
+	pk12util -i $(server_p12) -W $(shell gpg -dq $(server_asc)) -d $(nssdb)
+
+nssdb-list:
+	certutil -L -d $(nssdb)
+
+nssdb-clean:
+	certutil -D -n "RootCA" -d $(nssdb)
+	certutil -D -n "SigningCA" -d $(nssdb)
+	certutil -D -n $(PKI_CN) -d $(nssdb)
+	rm .nssdb-import-ca
 
 ###############################################################################
 # Functions

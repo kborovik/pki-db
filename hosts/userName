@@ -1,0 +1,3 @@
+#!/bin/sh
+export PKI_CN="JohnDoe"
+export PKI_SAN="email:john.doe@lab5.ca"
