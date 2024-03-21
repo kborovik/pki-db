@@ -1,14 +1,16 @@
+.EXPORT_ALL_VARIABLES:
 .ONESHELL:
 .SILENT:
-.EXPORT_ALL_VARIABLES:
+
+MAKEFLAGS += --no-builtin-rules --no-builtin-variables
 
 ###############################################################################
 # Variables
 ###############################################################################
 
 GPG_KEY ?= 79A09C51CF531E16444D6871B59466C2C0CCF0BF
-PKI_CN ?=
-PKI_SAN ?=
+PKI_CN ?= www.lab5.ca
+PKI_SAN ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
 
 # Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
 pkey_algorithm ?= RSA
@@ -20,7 +22,7 @@ pkey_pass_size ?= 64
 
 .PHONY: default clean settings
 
-default: settings prompt-create root signing server
+default: settings prompt-create root signing server show-crt
 
 clean: prompt-destroy
 	-rm -rf ca crl certs .initialized
