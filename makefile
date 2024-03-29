@@ -12,8 +12,6 @@ GPG_KEY ?= 79A09C51CF531E16444D6871B59466C2C0CCF0BF
 PKI_CN ?= www.lab5.ca
 PKI_SAN ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
 
-# Valid algorithm names for private key generation are RSA, RSA-PSS, ED25519, ED448
-pkey_algorithm ?= RSA
 pkey_pass_size ?= 64
 
 ###############################################################################
@@ -58,7 +56,7 @@ $(root_asc):
 	$(call gen_pass,$(pkey_pass_size)) > $(@)
 
 $(root_key): $(root_asc)
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(shell gpg -dq $(root_asc)) -out $(@)
+	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 -aes-256-cbc -pass pass:$(shell gpg -dq $(root_asc)) -out $(@)
 
 $(root_csr): $(root_key)
 	openssl req -new -config etc/root.conf -key $(root_key) -passin pass:$(shell gpg -dq $(root_asc)) -out $(@)
@@ -84,7 +82,7 @@ $(signing_asc): $(root_crt)
 	$(call gen_pass,$(pkey_pass_size)) > $(@)
 
 $(signing_key): $(signing_asc)
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(shell gpg -dq $(signing_asc)) -out $(@)
+	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 -aes-256-cbc -pass pass:$(shell gpg -dq $(signing_asc)) -out $(@)
 
 $(signing_csr): $(signing_key)
 	openssl req -new -config etc/signing.conf -key $(signing_key) -passin pass:$(shell gpg -dq $(signing_asc)) -out $(@)
@@ -116,7 +114,7 @@ $(server_asc):
 	$(call gen_pass,15) > $(@)
 
 $(server_key): $(server_asc)
-	openssl genpkey -algorithm $(pkey_algorithm) -aes-256-cbc -pass pass:$(shell gpg -dq $(server_asc)) -out $(@)
+	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes-256-cbc -pass pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
 $(server_csr): $(server_key)
 	openssl req -new -config etc/server.conf -key $(server_key) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
