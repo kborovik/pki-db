@@ -128,27 +128,31 @@ source hosts/www.lab5.ca
 make
 ```
 
-## Show Private Key Password
+**Show Private Key Password**
 
 ```shell
 make show-pass
 ```
 
-## Decrypt Private Key
+**Decrypt Private Key**
 
 ```shell
 make show-key
 ```
 
-## View CSR, CRT, P12
+**View CSR**
 
 ```shell
 make show-csr
 ```
 
+**View CRT**
+
 ```shell
 make show-crt
 ```
+
+**View P12**
 
 ```shell
 make show-p12
