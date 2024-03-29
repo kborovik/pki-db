@@ -38,16 +38,10 @@ git clone https://github.com/kborovik/pki-db.git
 
 - **Initialize new PKI DB**
 
-`make clean` removes old PKI DB and all TLS certificates.
+Remove old PKI DB and all TLS certificates
 
 ```
 make clean
-
-######################################################################
-# WARNING! - All TLS private keys will be destroyed!
-######################################################################
-
-Continue destruction? (yes/no): yes
 ```
 
 - **Remove old Git repository**
@@ -61,7 +55,7 @@ rm -rf .git
 ```shell
 git init
 git add --all
-git commit -m 'new pki-db host.com'
+git commit -m 'initial pki db'
 ```
 
 - **Set GPG keys**
@@ -71,16 +65,23 @@ GPG key encrypts passwords for TLS certificate private keys. Each TLS private ke
 Example:
 
 ```shell
-GPG_KEY := 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
+export GPG_KEY=1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 ```
 
 ```shell
 vim makefile
 ```
 
-- **Update `[ ca_dn ]` information**
+- **Update Certificate Authority Distinguished Name**
 
-Add organization Certificate Authority Distinguished Name.
+Add organization Certificate Authority Distinguished Name in files:
+
+```shell
+etc/
+├── root.conf
+├── server.conf
+└── signing.conf
+```
 
 Example:
 
@@ -91,12 +92,6 @@ Example:
 organizationName = Lab5 DevOps Inc.
 organizationalUnitName = www.lab5.ca
 commonName = $organizationName Root CA
-```
-
-```
-vim etc/root.conf
-vim etc/signing.conf
-vim etc/server.conf
 ```
 
 - **Create certificate template**
@@ -122,7 +117,7 @@ make: *** No rule to make target 'hosts/www.lab5.ca', needed by 'certs/www.lab5.
 - **Export environment variables**
 
 ```shell
-source hosts/my.host.com
+source hosts/www.lab5.ca
 ```
 
 - **Create new certificate**

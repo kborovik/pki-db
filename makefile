@@ -8,7 +8,7 @@ MAKEFLAGS += --no-builtin-rules --no-builtin-variables
 # Variables
 ###############################################################################
 
-GPG_KEY := 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
+GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 PKI_CN ?= www.lab5.ca
 PKI_SAN ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
 
