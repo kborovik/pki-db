@@ -106,7 +106,9 @@ export PKI_CN="www.lab5.ca"
 export PKI_SAN="DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com"
 ```
 
-**WARNING!**: `hosts/new.domain.com` must have the same name as `PKI_CN`. Example: `hosts/new.domain.com` == `PKI_CN=new.domain.com`
+**WARNING!**: `hosts/new.domain.com` must have the same name as `PKI_CN`. 
+
+*Example*: `hosts/new.domain.com` == `PKI_CN=new.domain.com`
 
 If file name is not the same as `PKI_CN` the following error message will be printed:
 
