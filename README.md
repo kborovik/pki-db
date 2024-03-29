@@ -20,7 +20,7 @@ This repo generates certificate package:
 
 # Demo
 
-[![asciicast](https://asciinema.org/a/644660.svg)](https://asciinema.org/a/644660)
+[[![asciicast](https://asciinema.org/a/649686.svg)](https://asciinema.org/a/649686))
 
 # Requirements
 
