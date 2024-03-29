@@ -94,6 +94,8 @@ organizationalUnitName = www.lab5.ca
 commonName = $organizationName Root CA
 ```
 
+## Create or Update Certificate
+
 **Create certificate template**
 
 Add Common Name (PKI_CN) and Subject Alternative Name (PKI_SAN).
@@ -122,10 +124,20 @@ make: *** No rule to make target 'hosts/www.lab5.ca', needed by 'certs/www.lab5.
 source hosts/www.lab5.ca
 ```
 
-**Create new certificate**
+**Create or update certificate**
 
 ```shell
 make
+```
+
+```shell
+certs/
+├── ca-certificates.crt
+├── www.lab5.ca.asc
+├── www.lab5.ca.crt
+├── www.lab5.ca.csr
+├── www.lab5.ca.key
+└── www.lab5.ca.p12
 ```
 
 **Show Private Key Password**
