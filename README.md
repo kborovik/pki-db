@@ -30,13 +30,13 @@ The procedure was developed and tested with `OpenSSL 3.0.2 15 Mar 2022 (Library:
 
 ## Create New PKI
 
-- **Clone repository**
+**Clone repository**
 
 ```
 git clone https://github.com/kborovik/pki-db.git
 ```
 
-- **Initialize new PKI DB**
+**Initialize new PKI DB**
 
 Remove old PKI DB and all TLS certificates
 
@@ -44,13 +44,13 @@ Remove old PKI DB and all TLS certificates
 make clean
 ```
 
-- **Remove old Git repository**
+**Remove old Git repository**
 
 ```shell
 rm -rf .git
 ```
 
-- **Create new Git repository**
+**Create new Git repository**
 
 ```shell
 git init
@@ -58,7 +58,7 @@ git add --all
 git commit -m 'initial pki db'
 ```
 
-- **Set GPG keys**
+**Set GPG keys**
 
 GPG key encrypts passwords for TLS certificate private keys. Each TLS private keys gets a unique password. This allows generate random private key passwords and share them easily with other team members.
 
@@ -72,7 +72,7 @@ export GPG_KEY=1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 vim makefile
 ```
 
-- **Update Certificate Authority Distinguished Name**
+**Update Certificate Authority Distinguished Name**
 
 Add organization Certificate Authority Distinguished Name in files:
 
@@ -94,7 +94,7 @@ organizationalUnitName = www.lab5.ca
 commonName = $organizationName Root CA
 ```
 
-- **Create certificate template**
+**Create certificate template**
 
 Add Common Name (PKI_CN) and Subject Alternative Name (PKI_SAN).
 
@@ -114,13 +114,13 @@ If file name is not the same as `PKI_CN` the following error message will be pri
 make: *** No rule to make target 'hosts/www.lab5.ca', needed by 'certs/www.lab5.ca.csr'.  Stop.
 ```
 
-- **Export environment variables**
+**Export environment variables**
 
 ```shell
 source hosts/www.lab5.ca
 ```
 
-- **Create new certificate**
+**Create new certificate**
 
 ```shell
 make
