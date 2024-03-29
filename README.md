@@ -30,47 +30,19 @@ The procedure was developed and tested with `OpenSSL 3.0.2 15 Mar 2022 (Library:
 
 ## Create New PKI
 
-- Clone repository
+- **Clone repository**
 
 ```
 git clone https://github.com/kborovik/pki-db.git
 ```
 
-- Set GPG key (gpg_key := 51DB9DC8)
+- **Initialize new PKI DB**
 
-```
-vim Makefile
-```
-
-- Update `[ ca_dn ]` information
-
-```
-vim etc/root.conf
-vim etc/signing.conf
-vim etc/server.conf
-```
-
-- Create certificate template (`CommonName` and `subjectAltName`)
-
-```
-cp hosts/www.lab5.ca hosts/new.host.com
-```
-
-```
-vim hosts/new.host.com
-```
-
-```
-source hosts/new.host.com
-```
-
-- Initialize new PKI DB
+`make clean` removes old PKI DB and all TLS certificates.
 
 ```
 make clean
-```
 
-```
 ######################################################################
 # WARNING! - All TLS private keys will be destroyed!
 ######################################################################
@@ -78,119 +50,110 @@ make clean
 Continue destruction? (yes/no): yes
 ```
 
-- Create new certificate
+- **Remove old Git repository**
 
-```
-make
-```
-
-```
-######################################################################
-OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
-GPG_KEY=79A09C51CF531E16444D6871B59466C2C0CCF0BF
-PKI_CN=www.lab5.ca
-PKI_SAN=DNS:www.lab5.ca,DNS:log.lab5.ca,IP:10.99.99.100,IP:127.0.0.1
-######################################################################
-
-Create certificate? (yes/no):
-```
-
-- Remove old Git repository
-
-```
+```shell
 rm -rf .git
 ```
 
-- Create new Git repository
+- **Create new Git repository**
 
-```
+```shell
 git init
 git add --all
 git commit -m 'new pki-db host.com'
 ```
 
-## Create New Certificate
+- **Set GPG keys**
 
-- Create server certificate template
+GPG key encrypts passwords for TLS certificate private keys. Each TLS private keys gets a unique password. This allows generate random private key passwords and share them easily with other team members.
 
-```
-vim hosts/new.host.com
-```
+Example:
 
-```
-cat hosts/new.host.com
+```shell
+GPG_KEY := 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 ```
 
+```shell
+vim makefile
 ```
-export PKI_CN="new.host.com"
-export PKI_SAN="DNS:new.host.com, IP:127.0.0.1"
+
+- **Update `[ ca_dn ]` information**
+
+Add organization Certificate Authority Distinguished Name.
+
+Example:
+
+```ini
+[ ca_dn ]
+0.domainComponent = ca
+1.domainComponent = lab5
+organizationName = Lab5 DevOps Inc.
+organizationalUnitName = www.lab5.ca
+commonName = $organizationName Root CA
 ```
 
 ```
-source hosts/new.host.com
+vim etc/root.conf
+vim etc/signing.conf
+vim etc/server.conf
 ```
 
-- Create certificate
+- **Create certificate template**
 
+Add Common Name (PKI_CN) and Subject Alternative Name (PKI_SAN).
+
+Example:
+
+```bash
+#!/usr/bin/env bash
+export PKI_CN="www.lab5.ca"
+export PKI_SAN="DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com"
 ```
+
+**WARNING!**: `hosts/new.domain.com` must have the same name as `PKI_CN`. Example: `hosts/new.domain.com` == `PKI_CN=new.domain.com`
+
+If file name is not the same as `PKI_CN` the following error message will be printed:
+
+```shell
+make: *** No rule to make target 'hosts/www.lab5.ca', needed by 'certs/www.lab5.ca.csr'.  Stop.
+```
+
+- **Export environment variables**
+
+```shell
+source hosts/my.host.com
+```
+
+- **Create new certificate**
+
+```shell
 make
-```
-
-```
-######################################################################
-OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
-GPG_KEY=79A09C51CF531E16444D6871B59466C2C0CCF0BF
-PKI_CN=db.lab5.ca
-PKI_SAN=DNS:db.lab5.ca,DNS:db1.lab5.ca,IP:10.88.88.88,IP:127.0.0.1
-######################################################################
-
-Create certificate? (yes/no):
-```
-
-```
-tree certs/
-```
-
-```
-certs/
-├── ca-certificates.crt
-├── db.lab5.ca.asc
-├── db.lab5.ca.crt
-├── db.lab5.ca.csr
-├── db.lab5.ca.key
-├── db.lab5.ca.p12
-├── www.lab5.ca.asc
-├── www.lab5.ca.crt
-├── www.lab5.ca.csr
-├── www.lab5.ca.key
-└── www.lab5.ca.p12
-
-0 directories, 11 files
 ```
 
 ## Show Private Key Password
 
-```
+```shell
 make show-pass
 ```
 
 ## Decrypt Private Key
 
-```
+```shell
 make show-key
 ```
 
 ## View CSR, CRT, P12
 
-```
+```shell
 make show-csr
 ```
 
-```
+```shell
 make show-crt
 ```
 
-```
+```shell
 make show-p12
 ```
 

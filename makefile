@@ -8,7 +8,7 @@ MAKEFLAGS += --no-builtin-rules --no-builtin-variables
 # Variables
 ###############################################################################
 
-GPG_KEY ?= 79A09C51CF531E16444D6871B59466C2C0CCF0BF
+GPG_KEY := 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 PKI_CN ?= www.lab5.ca
 PKI_SAN ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
 
@@ -104,6 +104,7 @@ $(root_ca): $(root_crt) $(signing_crt)
 # Servers PKI
 ###############################################################################
 
+server_env := hosts/$(PKI_CN)
 server_asc := certs/$(PKI_CN).asc
 server_key := certs/$(PKI_CN).key
 server_csr := certs/$(PKI_CN).csr
@@ -116,7 +117,7 @@ $(server_asc):
 $(server_key): $(server_asc)
 	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes-256-cbc -pass pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
-$(server_csr): $(server_key)
+$(server_csr): $(server_key) $(server_env)
 	openssl req -new -config etc/server.conf -key $(server_key) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
 $(server_crt): $(signing_crt) $(server_csr)
@@ -254,11 +255,11 @@ prompt-create:
 ###############################################################################
 
 ifndef PKI_CN
-$(error Set PKI_CN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
+$(error PKI_CN is not exported ==> source hosts/www.lab5.ca <==)
 endif
 
 ifndef PKI_SAN
-$(error Set PKI_SAN ==> vim hosts/www.lab5.ca && source hosts/www.lab5.ca <==)
+$(error PKI_SAN is not exported ==> source hosts/www.lab5.ca <==)
 endif
 
 ifeq ($(shell which openssl),)
