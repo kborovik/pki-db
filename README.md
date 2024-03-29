@@ -69,7 +69,10 @@ export GPG_KEY=1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 ```
 
 ```shell
-head -n 14 makefile 
+head -n 14 makefile
+```
+
+```makefile
 .EXPORT_ALL_VARIABLES:
 .ONESHELL:
 .SILENT:
