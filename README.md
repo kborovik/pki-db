@@ -73,12 +73,6 @@ head -n 14 makefile
 ```
 
 ```makefile
-.EXPORT_ALL_VARIABLES:
-.ONESHELL:
-.SILENT:
-
-MAKEFLAGS += --no-builtin-rules --no-builtin-variables
-
 ###############################################################################
 # Variables
 ###############################################################################
