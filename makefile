@@ -247,11 +247,11 @@ commit: version
 	git add --all
 	git commit -m "$$(cat VERSION)"
 
-tag: commit
+tag:
 	version=$$(date +%Y.%m.%d)
 	git tag "$$version" -m "Version: $$version"
 
-release: tag
+release: commit tag
 	git push --tags --force
 
 ###############################################################################
