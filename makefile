@@ -249,7 +249,7 @@ commit: version
 
 tag:
 	version=$$(date +%Y.%m.%d)
-	git tag "$$version" -m "Version: $$version"
+	git tag "$$version" -m "Version: $$version" --force
 
 release: commit tag
 	git push --tags --force
