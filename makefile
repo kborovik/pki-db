@@ -9,10 +9,8 @@ MAKEFLAGS += --no-builtin-rules --no-builtin-variables
 ###############################################################################
 
 GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
-PKI_CN ?= www.lab5.ca
-PKI_SAN ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
-
 pkey_pass_size ?= 64
+openssl_version := $(shell openssl version)
 
 ###############################################################################
 # General Targets
@@ -20,24 +18,29 @@ pkey_pass_size ?= 64
 
 .PHONY: default clean settings
 
-default: settings prompt-create root signing server show-crt
-
-clean: prompt-destroy
-	-rm -rf ca crl certs .initialized
-	$(MAKE) db
+default: settings root signing server
 
 settings: $(dirs)
-	echo "######################################################################"
-	openssl version
-	echo "GPG_KEY=$(GPG_KEY)"
-	echo "PKI_CN=$(PKI_CN)"
-	echo "PKI_SAN=$(PKI_SAN)"
-	echo "######################################################################"
+	$(call header,Settings)
+	$(call var,OpenSSL Version,$(openssl_version))
+	$(call var,GPG_KEY,$(GPG_KEY))
+
+clean: prompt-delete
+	$(call header,Cleaning PKI DB)
+	-rm -rf ca crl certs .initialized
+	$(MAKE) db
 
 dirs := ca/root/db ca/signing/db certs
 
 $(dirs):
 	mkdir -p $(@)
+
+###############################################################################
+# Variables
+###############################################################################
+
+PKI_CN ?= www.lab5.ca
+PKI_SAN ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
 
 ###############################################################################
 # Root PKI
@@ -197,14 +200,6 @@ nssdb-clean:
 	rm .nssdb-import-ca
 
 ###############################################################################
-# Commit
-###############################################################################
-
-commit:
-	git add --all
-	git commit -m "$(PKI_CN)" -m "$(PKI_SAN)"
-
-###############################################################################
 # Functions
 ###############################################################################
 
@@ -215,40 +210,6 @@ endef
 define gen_pass
 gpg --gen-random --armor 1 128 | tr -d '/=+' | cut -c -$(1) | tr -d '[:space:]' | gpg -e -r $(GPG_KEY)
 endef
-
-###############################################################################
-# Demo
-###############################################################################
-
-.PHONY: demo-record
-
-demo-record:
-	asciinema rec -t "pki-db make"
-
-###############################################################################
-# Prompts
-###############################################################################
-
-.PHONY: prompt-destroy prompt-create
-
-prompt-destroy:
-	echo "######################################################################"
-	echo "# WARNING! - All TLS private keys will be destroyed!"
-	echo "######################################################################"
-	echo
-	read -p "Continue destruction? (yes/no): " INP
-	if [ "$${INP}" != "yes" ]; then 
-	  echo "Deployment aborted"
-	  exit 100
-	fi
-
-prompt-create:
-	echo
-	read -p "Create certificate? (yes/no): " INP
-	if [ "$${INP}" != "yes" ]; then 
-	  echo "Deployment aborted"
-	  exit 100
-	fi
 
 ###############################################################################
 # Errors Check
@@ -270,3 +231,59 @@ ifeq ($(shell which gpg),)
 $(error Missing command 'gpg'. https://gnupg.org/)
 endif
 
+###############################################################################
+# Repo Version
+###############################################################################
+
+.PHONY: version
+
+version:
+	version=$$(date +%Y.%m.%d-%H%M)
+	echo "$$version" >| VERSION
+	$(call header,Version: $$(cat VERSION))
+	git add VERSION
+
+commit: version
+	git add --all
+	git commit -m "$$(cat VERSION)"
+
+tag: commit
+	version=$$(date +%Y.%m.%d)
+	git tag "$$version" -m "Version: $$version"
+
+release: tag
+	git push --tags --force
+
+###############################################################################
+# Colors and Headers
+###############################################################################
+
+black := \033[30m
+red := \033[31m
+green := \033[32m
+yellow := \033[33m
+blue := \033[34m
+magenta := \033[35m
+cyan := \033[36m
+white := \033[37m
+reset := \033[0m
+
+define header
+echo "$(blue)==> $(1) <==$(reset)"
+endef
+
+define help
+echo "$(green)$(1)$(reset) - $(white)$(2)$(reset)"
+endef
+
+define var
+echo "$(magenta)$(1)$(reset): $(yellow)$(2)$(reset)"
+endef
+
+prompt:
+	echo -n "$(blue)Continue?$(reset) $(yellow)(yes/no)$(reset)"
+	read -p ": " answer && [ "$$answer" = "yes" ] || exit 1
+
+prompt-delete:
+	echo -n "$(blue)Delete PKI DB?$(reset) $(yellow)(yes/no)$(reset)"
+	read -p ": " answer && [ "$$answer" = "yes" ] || exit 1
