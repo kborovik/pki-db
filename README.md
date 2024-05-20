@@ -24,7 +24,7 @@ This repo generates certificate package:
 
 # Requirements
 
-The procedure was developed and tested with `OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)`
+The procedure was developed and tested with `OpenSSL >= 3.0.0`
 
 # How to Use
 
@@ -78,8 +78,8 @@ head -n 14 makefile
 ###############################################################################
 
 GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
-PKI_CN ?= www.lab5.ca
-PKI_SAN ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
+COMMON_NAME ?= www.lab5.ca
+SUBJECT_ALT_NAME ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
 
 ```
 
@@ -107,23 +107,23 @@ commonName = $organizationName Root CA
 
 ## Create or Update Certificate
 
-**Create certificate template**
+**Create certificate config**
 
-Add Common Name (PKI_CN) and Subject Alternative Name (PKI_SAN).
+Add Common Name (COMMON_NAME) and Subject Alternative Name (SUBJECT_ALT_NAME).
 
 Example:
 
 ```bash
 #!/usr/bin/env bash
-export PKI_CN="www.lab5.ca"
-export PKI_SAN="DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com"
+export COMMON_NAME="www.lab5.ca"
+export SUBJECT_ALT_NAME="DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com"
 ```
 
-**WARNING!**: `hosts/new.domain.com` must have the same name as `PKI_CN`. 
+**WARNING!**: `hosts/new.domain.com` must have the same name as `COMMON_NAME`. 
 
-Example: `hosts/new.domain.com` == `PKI_CN=new.domain.com`
+Example: `hosts/new.domain.com` == `COMMON_NAME=new.domain.com`
 
-If file name is not the same as `PKI_CN` the following **error message** will be printed:
+If file name is not the same as `COMMON_NAME` the following **error message** will be printed:
 
 ```shell
 make: *** No rule to make target 'hosts/www.lab5.ca', needed by 'certs/www.lab5.ca.csr'.  Stop.

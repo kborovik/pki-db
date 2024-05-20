@@ -8,6 +8,13 @@ MAKEFLAGS += --no-builtin-rules --no-builtin-variables
 # Variables
 ###############################################################################
 
+COMMON_NAME ?= www.lab5.ca
+SUBJECT_ALT_NAME ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
+
+###############################################################################
+# Variables
+###############################################################################
+
 GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 pkey_pass_size ?= 64
 openssl_version := $(shell openssl version)
@@ -18,10 +25,13 @@ openssl_version := $(shell openssl version)
 
 .PHONY: default clean settings
 
-default: settings root signing server
+default: settings prompt-create root signing server .initialized
 
 settings: $(dirs)
-	$(call header,Settings)
+	$(call header,Certificate)
+	$(call var,COMMON_NAME,$(COMMON_NAME))
+	$(call var,SUBJECT_ALT_NAME,$(SUBJECT_ALT_NAME))
+	$(call header,Software)
 	$(call var,OpenSSL Version,$(openssl_version))
 	$(call var,GPG_KEY,$(GPG_KEY))
 
@@ -34,13 +44,6 @@ dirs := ca/root/db ca/signing/db certs
 
 $(dirs):
 	mkdir -p $(@)
-
-###############################################################################
-# Variables
-###############################################################################
-
-PKI_CN ?= www.lab5.ca
-PKI_SAN ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
 
 ###############################################################################
 # Root PKI
@@ -107,12 +110,12 @@ $(root_ca): $(root_crt) $(signing_crt)
 # Servers PKI
 ###############################################################################
 
-server_env := hosts/$(PKI_CN)
-server_asc := certs/$(PKI_CN).asc
-server_key := certs/$(PKI_CN).key
-server_csr := certs/$(PKI_CN).csr
-server_crt := certs/$(PKI_CN).crt
-server_p12 := certs/$(PKI_CN).p12
+server_env := hosts/$(COMMON_NAME)
+server_asc := certs/$(COMMON_NAME).asc
+server_key := certs/$(COMMON_NAME).key
+server_csr := certs/$(COMMON_NAME).csr
+server_crt := certs/$(COMMON_NAME).crt
+server_p12 := certs/$(COMMON_NAME).p12
 
 $(server_asc):
 	$(call gen_pass,15) > $(@)
@@ -128,7 +131,7 @@ $(server_crt): $(signing_crt) $(server_csr)
 	$(call clean_cert,$(@))
 
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
-	openssl pkcs12 -export -legacy -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(PKI_CN) -passout pass:$(shell gpg -dq $(server_asc)) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
+	openssl pkcs12 -export -legacy -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(COMMON_NAME) -passout pass:$(shell gpg -dq $(server_asc)) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
 .PHONY: show-pass show-key show-csr show-crt show-p12
 
@@ -156,7 +159,7 @@ show-p12:
 init_files := $(root_asc) $(root_key) $(root_csr) $(root_crt) $(signing_asc) $(signing_key) $(signing_csr) $(signing_crt) $(root_ca) $(server_asc) $(server_key) $(server_csr) $(server_crt) $(server_p12)
 
 .initialized:
-	$(info ==> initializing PKI DB <==)
+	$(call header,Initialize PKI DB)
 	for file in $(init_files); do
 		test -f $${file} && touch $${file} && echo $${file} && sleep 1
 	done
@@ -196,7 +199,7 @@ nssdb-list:
 nssdb-clean:
 	certutil -D -n "RootCA" -d $(nssdb)
 	certutil -D -n "SigningCA" -d $(nssdb)
-	certutil -D -n $(PKI_CN) -d $(nssdb)
+	certutil -D -n $(COMMON_NAME) -d $(nssdb)
 	rm .nssdb-import-ca
 
 ###############################################################################
@@ -215,12 +218,12 @@ endef
 # Errors Check
 ###############################################################################
 
-ifndef PKI_CN
-$(error PKI_CN is not exported ==> source hosts/www.lab5.ca <==)
+ifndef COMMON_NAME
+$(error COMMON_NAME is not exported ==> source hosts/www.lab5.ca <==)
 endif
 
-ifndef PKI_SAN
-$(error PKI_SAN is not exported ==> source hosts/www.lab5.ca <==)
+ifndef SUBJECT_ALT_NAME
+$(error SUBJECT_ALT_NAME is not exported ==> source hosts/www.lab5.ca <==)
 endif
 
 ifeq ($(shell which openssl),)
@@ -280,8 +283,8 @@ define var
 echo "$(magenta)$(1)$(reset): $(yellow)$(2)$(reset)"
 endef
 
-prompt:
-	echo -n "$(blue)Continue?$(reset) $(yellow)(yes/no)$(reset)"
+prompt-create:
+	echo -n "$(blue)Create Certificates?$(reset) $(white)(yes/no)$(reset)"
 	read -p ": " answer && [ "$$answer" = "yes" ] || exit 1
 
 prompt-delete:
