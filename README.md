@@ -62,25 +62,32 @@ git commit -m 'initial pki db'
 
 GPG key encrypts passwords for TLS certificate private keys. Each TLS private keys gets a unique password. This allows generate random private key passwords and share them easily with other team members.
 
-Example:
+**Set shell environment**
 
 ```shell
 export GPG_KEY=1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 ```
 
+**Update Makefile**
+
 ```shell
-head -n 14 makefile
+(0) > grep -e '^GPG_KEY' makefile
+GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
+
 ```
 
-```makefile
-###############################################################################
-# Variables
-###############################################################################
+**View settings**
 
-GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
-COMMON_NAME ?= www.lab5.ca
-SUBJECT_ALT_NAME ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
-
+```shell
+(0) > make
+==> Certificate <==
+COMMON_NAME: 
+SUBJECT_ALT_NAME: 
+==> Encryption Key <==
+GPG_KEY: 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
+==> Software <==
+OpenSSL: OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
+GPG: gpg (GnuPG) 2.2.27
 ```
 
 **Update Certificate Authority Distinguished Name**
@@ -105,43 +112,30 @@ organizationalUnitName = www.lab5.ca
 commonName = $organizationName Root CA
 ```
 
-## Create or Update Certificate
+## Create Certificate
 
-**Create certificate config**
-
-Add Common Name (COMMON_NAME) and Subject Alternative Name (SUBJECT_ALT_NAME).
+**Create certificate**
 
 Example:
 
 ```bash
-#!/usr/bin/env bash
-export COMMON_NAME="www.lab5.ca"
-export SUBJECT_ALT_NAME="DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com"
+(0) > make COMMON_NAME="www.lab5.ca" SUBJECT_ALT_NAME="DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com"
+
+==> Certificate <==
+COMMON_NAME: www.lab5.ca
+SUBJECT_ALT_NAME: DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
+==> Encryption Key <==
+GPG_KEY: 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
+==> Software <==
+OpenSSL: OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
+GPG: gpg (GnuPG) 2.2.27
+Create Certificates? (yes/no): yes
+
 ```
-
-**WARNING!**: `hosts/new.domain.com` must have the same name as `COMMON_NAME`. 
-
-Example: `hosts/new.domain.com` == `COMMON_NAME=new.domain.com`
-
-If file name is not the same as `COMMON_NAME` the following **error message** will be printed:
+**View certificates**
 
 ```shell
-make: *** No rule to make target 'hosts/www.lab5.ca', needed by 'certs/www.lab5.ca.csr'.  Stop.
-```
-
-**Export environment variables**
-
-```shell
-source hosts/www.lab5.ca
-```
-
-**Create or update certificate**
-
-```shell
-make
-```
-
-```shell
+(0) > tree certs/
 certs/
 ├── ca-certificates.crt
 ├── www.lab5.ca.asc

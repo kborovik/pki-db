@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-export PKI_CN="John.Doe"
-export PKI_SAN="email:john.doe@lab5.ca"

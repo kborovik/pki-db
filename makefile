@@ -5,19 +5,40 @@
 MAKEFLAGS += --no-builtin-rules --no-builtin-variables
 
 ###############################################################################
-# Variables
+# Examples:
+# > make COMMON_NAME=example.com
+# > make COMMON_NAME=example.com SUBJECT_ALT_NAME=example.org
 ###############################################################################
 
-COMMON_NAME ?= www.lab5.ca
-SUBJECT_ALT_NAME ?= DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
+COMMON_NAME ?=
+SUBJECT_ALT_NAME ?=
+
+ifndef SUBJECT_ALT_NAME
+SUBJECT_ALT_NAME := $(COMMON_NAME)
+endif
 
 ###############################################################################
-# Variables
+# Settings
 ###############################################################################
 
 GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
-pkey_pass_size ?= 64
+
+pkey_pass_size := 64
+
 openssl_version := $(shell openssl version)
+gpg_version := $(shell gpg --version | head -n 1)
+
+###############################################################################
+# Errors Check
+###############################################################################
+
+ifeq ($(shell which openssl),)
+$(error Missing command 'openssl'. https://www.openssl.org/)
+endif
+
+ifeq ($(shell which gpg),)
+$(error Missing command 'gpg'. https://gnupg.org/)
+endif
 
 ###############################################################################
 # General Targets
@@ -25,15 +46,17 @@ openssl_version := $(shell openssl version)
 
 .PHONY: default clean settings
 
-default: settings prompt-create root signing server .initialized
+default: settings root signing server .initialized
 
 settings: $(dirs)
 	$(call header,Certificate)
 	$(call var,COMMON_NAME,$(COMMON_NAME))
 	$(call var,SUBJECT_ALT_NAME,$(SUBJECT_ALT_NAME))
-	$(call header,Software)
-	$(call var,OpenSSL Version,$(openssl_version))
+	$(call header,Encryption Key)
 	$(call var,GPG_KEY,$(GPG_KEY))
+	$(call header,Software)
+	$(call var,OpenSSL,$(openssl_version))
+	$(call var,GPG,$(gpg_version))
 
 clean: prompt-delete
 	$(call header,Cleaning PKI DB)
@@ -110,7 +133,6 @@ $(root_ca): $(root_crt) $(signing_crt)
 # Servers PKI
 ###############################################################################
 
-server_env := hosts/$(COMMON_NAME)
 server_asc := certs/$(COMMON_NAME).asc
 server_key := certs/$(COMMON_NAME).key
 server_csr := certs/$(COMMON_NAME).csr
@@ -123,7 +145,7 @@ $(server_asc):
 $(server_key): $(server_asc)
 	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -aes-256-cbc -pass pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
-$(server_csr): $(server_key) $(server_env)
+$(server_csr): $(server_key)
 	openssl req -new -config etc/server.conf -key $(server_key) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
 $(server_crt): $(signing_crt) $(server_csr)
@@ -175,7 +197,9 @@ root: $(root_crt)
 
 signing: $(signing_crt)
 
-server: $(root_ca) $(server_crt) $(server_p12)
+ifdef COMMON_NAME
+server: prompt-create $(root_ca) $(server_crt) $(server_p12)
+endif
 
 ###############################################################################
 # NSSDB
@@ -213,26 +237,6 @@ endef
 define gen_pass
 gpg --gen-random --armor 1 128 | tr -d '/=+' | cut -c -$(1) | tr -d '[:space:]' | gpg -e -r $(GPG_KEY)
 endef
-
-###############################################################################
-# Errors Check
-###############################################################################
-
-ifndef COMMON_NAME
-$(error COMMON_NAME is not exported ==> source hosts/www.lab5.ca <==)
-endif
-
-ifndef SUBJECT_ALT_NAME
-$(error SUBJECT_ALT_NAME is not exported ==> source hosts/www.lab5.ca <==)
-endif
-
-ifeq ($(shell which openssl),)
-$(error Missing command 'openssl'. https://www.openssl.org/)
-endif
-
-ifeq ($(shell which gpg),)
-$(error Missing command 'gpg'. https://gnupg.org/)
-endif
 
 ###############################################################################
 # Repo Version
