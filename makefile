@@ -13,8 +13,10 @@ MAKEFLAGS += --no-builtin-rules --no-builtin-variables
 COMMON_NAME ?=
 SUBJECT_ALT_NAME ?=
 
-ifndef SUBJECT_ALT_NAME
-SUBJECT_ALT_NAME := $(COMMON_NAME)
+ifdef COMMON_NAME
+  ifndef SUBJECT_ALT_NAME
+    SUBJECT_ALT_NAME := DNS:$(COMMON_NAME)
+  endif
 endif
 
 ###############################################################################
