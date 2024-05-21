@@ -20,7 +20,8 @@ This repo generates certificate package:
 
 # Demo
 
-![Demo](https://github.com/kborovik/pki-db/releases/download/2024.05.21/demo-create.mp4)
+<!-- ![Demo](https://github.com/kborovik/pki-db/releases/download/2024.05.21/demo-create.mp4) -->
+<video src='https://github.com/kborovik/pki-db/releases/download/2024.05.21/demo-create.mp4' width=180/>
 
 # Requirements
 
