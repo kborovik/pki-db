@@ -20,9 +20,9 @@ This repo generates certificate package:
 
 # Demo
 
-Create Certificate Authority certificates:
+**Create Certificate Authority certificates**
 
-https://github.com/kborovik/pki-db/releases/download/2024.05.21/demo-create.mp4
+<video src="https://github.com/kborovik/pki-db/releases/download/2024.05.21/demo-create.mp4"></video>
 
 # Requirements
 
