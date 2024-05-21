@@ -48,7 +48,7 @@ endif
 
 .PHONY: default clean settings
 
-default: settings root signing server .initialized
+default: settings root signing server
 
 settings: $(dirs)
 	$(call header,Certificate)
