@@ -10,7 +10,7 @@ The Corporate CSR process can take anywhere from hours to weeks to complete.
 
 Test your Subject Alternative Names (SAN) and deployment process using a test certificate before submitting a CSR to the corporate PKI.
 
-This repo generates certificate package:
+This repo generates a certificate package:
 
 - Root CA certificate `ca-certificates.crt`
 - Test Host certificate `host.domain.com.crt`
@@ -22,11 +22,11 @@ This repo generates certificate package:
 
 **Create Certificate Authority certificates**
 
-<video src="https://github.com/kborovik/pki-db/assets/59314971/a95dd5ce-1125-4634-aa9c-0f9b8daaf08f.mp4"></video>
+<video src="https://github.com/kborovik/pki-db/assets/59314971/953959a2-e6da-4a5e-a91d-64ed86919a37"></video>
 
 **Create Host certificate bundle**
 
-<video src="https://github.com/kborovik/pki-db/assets/59314971/a95dd5ce-1125-4634-aa9c-0f9b8daaf08f.mp4"></video>
+<video src="https://github.com/kborovik/pki-db/assets/59314971/e82db5d6-d24c-4e77-ad31-d8b3fd2d7c9b"></video>
 
 # Requirements
 
@@ -66,7 +66,7 @@ git commit -m 'initial pki db'
 
 **Set GPG keys**
 
-GPG key encrypts passwords for TLS certificate private keys. Each TLS private keys gets a unique password. This allows generate random private key passwords and share them easily with other team members.
+GPG key encrypts passwords for TLS certificate private keys. Each TLS private key gets a unique password. This allows the generation of random private key passwords and their creation easily with other team members.
 
 **Set shell environment**
 
