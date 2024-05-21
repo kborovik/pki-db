@@ -22,7 +22,7 @@ This repo generates certificate package:
 
 **Create Certificate Authority certificates**
 
-<video src="https://github.com/kborovik/pki-db/releases/download/2024.05.21/demo-create.mp4"></video>
+<video src="https://lab5-ca.web.app/_static/pki-db.mp4"></video>
 
 # Requirements
 
