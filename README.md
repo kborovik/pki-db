@@ -20,7 +20,10 @@ This repo generates certificate package:
 
 # Demo
 
-[![asciicast](https://asciinema.org/a/649686.svg)](https://asciinema.org/a/649686)
+<video width="640" height="480" controls>
+  <source src="demo.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
 
 # Requirements
 

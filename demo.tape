@@ -33,7 +33,7 @@ Enter
 Sleep 6
 
 Ctrl+L
-Type 'Create Root and Signing certificate'
+Type 'Create Root and Signing certificates'
 Sleep 6
 Ctrl+u
 Type "make"
@@ -67,7 +67,6 @@ Type "Set COMMON_NAME"
 Sleep 6
 Ctrl+u
 Type "export COMMON_NAME=db.lab5.ca"
-Sleep 4
 Enter
 Sleep 4
 Type "Generate certificate bundle"
@@ -92,7 +91,6 @@ Type "List generated certificates"
 Sleep 6
 Ctrl+u
 Type "tree certs/"
-Sleep 4
 Enter
 Sleep 6
 
