@@ -20,7 +20,7 @@ This repo generates certificate package:
 
 # Demo
 
-![Create Root ans Signing certificates](https://github.com/kborovik/pki-db/blob/main/demo-create.gif)
+![Demo](https://github.com/kborovik/pki-db/releases/download/2024.05.21/demo-create.mp4)
 
 # Requirements
 
