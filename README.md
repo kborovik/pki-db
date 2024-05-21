@@ -22,7 +22,7 @@ This repo generates certificate package:
 
 **Create Certificate Authority certificates**
 
-<video src="https://lab5-ca.web.app/_static/pki-db.mp4"></video>
+[![Create Certificate Authority certificates]](https://youtu.be/F9H_f8MpwBc)
 
 # Requirements
 
