@@ -20,7 +20,7 @@ This repo generates certificate package:
 
 # Demo
 
-![Create Root ans Signing certificates](https://lab5-ca.web.app/_static/demo.webm)
+![Create Root ans Signing certificates](https://github.com/kborovik/pki-db/blob/main/demo-create.gif)
 
 # Requirements
 
