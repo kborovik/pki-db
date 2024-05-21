@@ -22,11 +22,11 @@ This repo generates a certificate package:
 
 **Create Certificate Authority certificates**
 
-<video src="">https://github.com/kborovik/pki-db/assets/59314971/6904829f-b4f4-4543-b4cc-fc05984a4c6f.mp4</video>
+<video src="https://github.com/kborovik/pki-db/assets/59314971/6904829f-b4f4-4543-b4cc-fc05984a4c6f"></video>
 
 **Create Host certificate bundle**
 
-<video src="">https://github.com/kborovik/pki-db/assets/59314971/36f1e035-86a0-4279-b0ed-1cbaf3cbc8be.mp4</video>
+<video src="https://github.com/kborovik/pki-db/assets/59314971/36f1e035-86a0-4279-b0ed-1cbaf3cbc8be"></video>
 
 # Requirements
 
