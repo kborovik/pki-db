@@ -22,7 +22,7 @@ This repo generates certificate package:
 
 **Create Certificate Authority certificates**
 
-<video src="https://user-images.githubusercontent.com/126239/151181856-5484da69-12dd-4f20-b652-3c55aeb2da73.mp4"></video>
+<video src="https://github.com/kborovik/pki-db/assets/59314971/a95dd5ce-1125-4634-aa9c-0f9b8daaf08f.mp4"></video>
 
 # Requirements
 
@@ -40,7 +40,7 @@ git clone https://github.com/kborovik/pki-db.git
 
 **Initialize new PKI DB**
 
-Remove old PKI DB and all TLS certificates
+Remove old PKI DB and all TLS certificates.
 
 ```
 make clean
