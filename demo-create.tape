@@ -1,36 +1,36 @@
 Output demo-create.gif
 
 Set Shell "bash"
-Set FontSize 36
+Set FontSize 42
 Set Width 3000
-Set Height 2000
+Set Height 1500
 Set LetterSpacing 1
 Set LineHeight 1.0
 Set Theme "Catppuccin Mocha"
 Set Padding 50
 Set Framerate 60
-Set PlaybackSpeed 0.8
+Set PlaybackSpeed 0.5
 Set TypingSpeed 0.2
 Set CursorBlink true
 
-Sleep 4
+Sleep 8
 Type "Remove old PKI data"
-Sleep 6
+Sleep 8
 Ctrl+u
 Type "make clean"
-Enter
-Sleep 4
+Enter 1
+Sleep 8
 Type "yes"
-Enter
+Enter 1
 Sleep 8
 
-Enter 2
+Enter 1
 Type "List repo files"
-Sleep 6
+Sleep 8
 Ctrl+u
 Type "tree --dirsfirst"
-Enter
-Sleep 12
+Enter 1
+Sleep 16
 
 # Ctrl+L
 # Type 'Create Root and Signing certificates'
