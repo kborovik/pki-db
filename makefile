@@ -157,7 +157,17 @@ $(server_crt): $(signing_crt) $(server_csr)
 $(server_p12): $(server_key) $(server_crt) $(root_ca)
 	openssl pkcs12 -export -legacy -inkey $(server_key) -in $(server_crt) -chain -CAfile $(root_ca) -name $(COMMON_NAME) -passout pass:$(shell gpg -dq $(server_asc)) -passin pass:$(shell gpg -dq $(server_asc)) -out $(@)
 
+db: $(root_db) $(signing_db)
+
+root: $(root_crt)
+
+signing: $(signing_crt)
+
+ifdef COMMON_NAME
+
 .PHONY: show-pass show-key show-csr show-crt show-p12
+
+server: prompt-create $(root_ca) $(server_crt) $(server_p12)
 
 show-pass:
 	gpg -dq $(server_asc)
@@ -174,11 +184,15 @@ show-crt:
 show-p12:
 	openssl pkcs12 -noenc -legacy -info -in $(server_p12) -passin 'pass:$(shell gpg -dq $(server_asc))'
 
+else
+
+server: $(root_ca)
+
+endif
+
 ###############################################################################
 # General Targets
 ###############################################################################
-
-.PHONY: init db root signing server
 
 init_files := $(root_asc) $(root_key) $(root_csr) $(root_crt) $(signing_asc) $(signing_key) $(signing_csr) $(signing_crt) $(root_ca) $(server_asc) $(server_key) $(server_csr) $(server_crt) $(server_p12)
 
@@ -192,16 +206,6 @@ init_files := $(root_asc) $(root_key) $(root_csr) $(root_crt) $(signing_asc) $(s
 init:
 	rm -rf .initialized
 	$(MAKE) .initialized
-
-db: $(root_db) $(signing_db)
-
-root: $(root_crt)
-
-signing: $(signing_crt)
-
-ifdef COMMON_NAME
-server: prompt-create $(root_ca) $(server_crt) $(server_p12)
-endif
 
 ###############################################################################
 # NSSDB
@@ -256,12 +260,9 @@ commit: version
 	git add --all
 	git commit -m "$$(cat VERSION)"
 
-tag:
+release: commit
 	version=$$(date +%Y.%m.%d)
-	git tag "$$version" -m "Version: $$version" --force
-
-release: commit tag
-	git push --tags --force
+	gh release create "$$version" *.mp4 -t "$$version" -n "$$version"
 
 ###############################################################################
 # Colors and Headers
