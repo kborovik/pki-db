@@ -22,7 +22,7 @@ This repo generates certificate package:
 
 **Create Certificate Authority certificates**
 
-[![Create Certificate Authority certificates]](https://youtu.be/F9H_f8MpwBc)
+![Create Certificate Authority certificates](https://youtu.be/F9H_f8MpwBc)
 
 # Requirements
 
