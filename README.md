@@ -24,6 +24,10 @@ This repo generates certificate package:
 
 <video src="https://github.com/kborovik/pki-db/assets/59314971/a95dd5ce-1125-4634-aa9c-0f9b8daaf08f.mp4"></video>
 
+**Create Host certificate bundle**
+
+<video src="https://github.com/kborovik/pki-db/assets/59314971/a95dd5ce-1125-4634-aa9c-0f9b8daaf08f.mp4"></video>
+
 # Requirements
 
 The procedure was developed and tested with `OpenSSL >= 3.0.0`

@@ -263,6 +263,7 @@ commit: version
 release: commit
 	version=$$(date +%Y.%m.%d)
 	gh release create "$$version" *.mp4 -t "$$version" -n "$$version"
+	git push --tags
 
 ###############################################################################
 # Colors and Headers
