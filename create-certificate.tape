@@ -1,7 +1,7 @@
 Output create-certificate.mp4
 
 Set Shell "bash"
-Set FontSize 24
+Set FontSize 30
 Set Width 1920
 Set Height 1080
 Set LetterSpacing 1
@@ -21,13 +21,15 @@ Sleep 3
 Enter
 Sleep 5
 
-Ctrl+L
+Enter 2
 Type "Set certificate Common Name"
 Sleep 3
 Ctrl+U
 Type "export COMMON_NAME=db.lab5.ca"
 Enter
-Sleep 4
+Sleep 5
+
+Enter 2
 Type "Generate certificate bundle"
 Sleep 3
 Ctrl+U
@@ -67,18 +69,9 @@ Sleep 4
 Space
 Sleep 4
 Type "q"
-Sleep 4
 
 Ctrl+L
-Type "Certificate secret keys encrypted with a password"
-Sleep 3
-Ctrl+U
-Type "cat certs/db.lab5.ca.key"
-Enter
-Sleep 4
-
-Ctrl+L
-Type "Show unencrypted certificate secret key"
+Type "Certificate secret keys encrypted with a password. Show unencrypted certificate secret key"
 Sleep 3
 Ctrl+U
 Type "make show-key"
@@ -90,7 +83,7 @@ Type "Show certificate password"
 Sleep 3
 Ctrl+U
 Type "make show-pass"
-Enter
+Enter 2
 Sleep 4
 
 Ctrl+L

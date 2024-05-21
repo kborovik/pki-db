@@ -1,7 +1,7 @@
 Output create-ca-authority.mp4
 
 Set Shell "bash"
-Set FontSize 24
+Set FontSize 30
 Set Width 1920
 Set Height 1080
 Set LetterSpacing 1
