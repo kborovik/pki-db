@@ -129,7 +129,9 @@ SUBJECT_ALT_NAME:
 GPG_KEY: 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 ==> Software <==
 OpenSSL: OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)
+Make: GNU Make 4.3
 GPG: gpg (GnuPG) 2.4.4
+Create Certificates? (yes/no): 
 ```
 
 ### Updating Certificate Authority Distinguished Name
@@ -174,11 +176,12 @@ export SUBJECT_ALT_NAME="DNS:www.lab5.ca,IP:127.0.0.1"
 make
 ==> Certificate <==
 COMMON_NAME: www.lab5.ca
-SUBJECT_ALT_NAME: DNS:www.lab5.ca,IP:127.0.0.1,email:user@email.com
+SUBJECT_ALT_NAME: DNS:www.lab5.ca,IP:127.0.0.1
 ==> Encryption Key <==
 GPG_KEY: 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 ==> Software <==
 OpenSSL: OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)
+Make: GNU Make 4.3
 GPG: gpg (GnuPG) 2.4.4
 Create Certificates? (yes/no): 
 ```
