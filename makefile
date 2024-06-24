@@ -28,6 +28,7 @@ GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5
 pkey_pass_size := 64
 
 openssl_version := $(shell openssl version)
+make_version := $(shell make --version | head -n 1)
 gpg_version := $(shell gpg --version | head -n 1)
 
 ###############################################################################
@@ -58,6 +59,7 @@ settings: $(dirs)
 	$(call var,GPG_KEY,$(GPG_KEY))
 	$(call header,Software)
 	$(call var,OpenSSL,$(openssl_version))
+	$(call var,Make,$(make_version))
 	$(call var,GPG,$(gpg_version))
 
 clean: prompt-delete
