@@ -44,8 +44,6 @@ The project is organized as follows:
 1. **etc** directory: Stores OpenSSL configuration files.
 1. **certs** directory: Stores generated certificates.
 
-This structure ensures efficient management of the PKI (Public Key Infrastructure) and adheres to best practices for certificate handling and security.
-
 ## Efficient Certificate Generation with GNU Make
 
 GNU Make offers a powerful feature that optimizes the certificate generation process. By leveraging timestamp comparisons, it allows us to skip the generation of certificates when the source files haven't changed. This capability enables us to create an efficient dependency chain, streamlining the entire PKI management workflow.
@@ -82,25 +80,25 @@ The repository generates a comprehensive certificate package containing:
 
 ### Setting Up a New PKI
 
-- Clone the repository
+**Clone the repository**
 
 ```shell
 git clone https://github.com/kborovik/pki-db.git
 ```
 
-- Initialize new PKI DB (removes old PKI DB and all TLS certificates)
+**Initialize new PKI DB (removes old PKI DB and all TLS certificates)**
 
 ```shell
 make clean
 ```
 
-- Remove old Git repository
+**Remove old Git repository**
 
 ```shell
 rm -rf .git
 ```
 
-- Create new Git repository
+**Create new Git repository**
 
 ```shell
 git init
@@ -112,13 +110,13 @@ git commit -m 'initial pki db'
 
 GPG keys are used to encrypt passwords for TLS certificate private keys. Each TLS private key receives a unique password, allowing for the generation of random private key passwords that can be easily shared with team members.
 
-- Update Makefile with GPG key
+**Update Makefile with GPG key**
 
 ```shell
 sed -i 's/^GPG_KEY .\*/GPG_KEY ?= 1A4A6FC0BB90A4B5F2A11031E577D405DD6ABEA5/' makefile
 ```
 
-- Verify GPG key
+**Verify GPG key**
 
 ```shell
 make
@@ -134,8 +132,6 @@ GPG: gpg (GnuPG) 2.4.4
 
 ### Updating Certificate Authority Distinguished Name
 
-Update the organization Certificate Authority Distinguished Name in the following files:
-
 ```shell
 etc/
 ├── root.conf
@@ -143,7 +139,7 @@ etc/
 └── server.conf
 ```
 
-**Example configuration:**
+**Example configuration**
 
 ```shell
 vim etc/root.config
@@ -151,7 +147,7 @@ vim etc/signing.config
 vim etc/server.config
 ```
 
-Update `ca_dn`
+**Update `ca_dn`**
 
 ```
 [ ca_dn ]
@@ -167,8 +163,8 @@ commonName = $organizationName Root CA
 To generate a new certificate, follow these steps:
 
 1. Set the required `COMMON_NAME` environment variable.
-2. Optionally, set the `SUBJECT_ALT_NAME` environment variable for additional identities.
-3. Run `make` command
+1. Optionally, set the `SUBJECT_ALT_NAME` environment variable for additional identities.
+1. Run `make` command
 
 ```shell
 export COMMON_NAME="www.lab5.ca"
