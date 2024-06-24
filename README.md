@@ -38,6 +38,16 @@ GNU Make offers a powerful feature that optimizes the certificate generation pro
 root_crt ==> signing_crt ==> host_crt
 ```
 
+## Demo
+
+### Creating Certificate Authority Certificates
+
+<video src="https://github.com/kborovik/pki-db/assets/59314971/6904829f-b4f4-4543-b4cc-fc05984a4c6f"></video>
+
+### Creating Host Certificate Bundle
+
+<video src="https://github.com/kborovik/pki-db/assets/59314971/36f1e035-86a0-4279-b0ed-1cbaf3cbc8be"></video>
+
 ### Requirements
 
 - OpenSSL version 3.0.0 or higher (https://www.openssl.org/)
@@ -53,30 +63,20 @@ The project is organized as follows:
 
 ### Key Components
 
-1. `makefile` contains the core logic and automation scripts.
-1. `ca` directory stores Certificate Authority related files.
-1. `etc` directory stores OpenSSL configuration files.
-1. `certs` directory stores generated certificates.
+- `makefile` contains the core logic and automation scripts.
+- `ca` directory stores Certificate Authority related files.
+- `etc` directory stores OpenSSL configuration files.
+- `certs` directory stores generated certificates.
 
 ### Generated Certificate Package
 
 The repository generates a comprehensive certificate package containing:
 
-1. Root CA certificate chain (Root+Signing) `ca-certificates.crt`
-1. Host CSR `host.domain.com.csr`
-1. Host certificate `host.domain.com.crt`
-1. Host encrypted private key `host.domain.com.key`
-1. Host P12 (PFX) bundle `host.domain.com.p12`
-
-## Demo
-
-### Creating Certificate Authority Certificates
-
-<video src="https://github.com/kborovik/pki-db/assets/59314971/6904829f-b4f4-4543-b4cc-fc05984a4c6f"></video>
-
-### Creating Host Certificate Bundle
-
-<video src="https://github.com/kborovik/pki-db/assets/59314971/36f1e035-86a0-4279-b0ed-1cbaf3cbc8be"></video>
+- Root CA certificate chain (Root+Signing) `ca-certificates.crt`
+- Host CSR `host.domain.com.csr`
+- Host certificate `host.domain.com.crt`
+- Host encrypted private key `host.domain.com.key`
+- Host P12 (PFX) bundle `host.domain.com.p12`
 
 ## Usage Guide
 
@@ -164,9 +164,9 @@ commonName = $organizationName Root CA
 
 To generate a new certificate, follow these steps:
 
-1. Set the required `COMMON_NAME` environment variable.
-1. Optionally, set the `SUBJECT_ALT_NAME` environment variable for additional identities.
-1. Run `make` command
+- Set the required `COMMON_NAME` environment variable.
+- Optionally, set the `SUBJECT_ALT_NAME` environment variable for additional identities.
+- Run `make` command
 
 ```shell
 export COMMON_NAME="www.lab5.ca"
