@@ -254,10 +254,9 @@ version:
 	version=$$(date +%Y.%m.%d-%H%M)
 	echo "$$version" >| VERSION
 	$(call header,Version: $$(cat VERSION))
-	git add VERSION
+	git add --all
 
 commit: version
-	git add --all
 	git commit -m "$$(cat VERSION)"
 
 release: commit
