@@ -40,15 +40,16 @@ root_crt ==> signing_crt ==> host_crt
 
 ### Requirements
 
-- OpenSSL version 3.0.0 or higher
-- GNU Make 4.0.0 or higher
+- OpenSSL version 3.0.0 or higher (https://www.openssl.org/)
+- GNU Make 4.0.0 or higher (https://www.gnu.org/software/make/)
+- GNU PG 2.0.0 or higher (https://gnupg.org/)
 
 ### Project Structure
 
 The project is organized as follows:
 
 - **Core Logic**: The main functionality is implemented in the `Makefile`.
-- **OpenSSL Folders**: The repository follows the standard OpenSSL directory structure.
+- **OpenSSL**: The repository follows the standard OpenSSL directory structure.
 
 ### Key Components
 
@@ -61,11 +62,11 @@ The project is organized as follows:
 
 The repository generates a comprehensive certificate package containing:
 
-1. Root CA certificate chain (Root+Signing) (`ca-certificates.crt`)
-2. Host CSR (`host.domain.com.csr`)
-3. Host certificate (`host.domain.com.crt`)
-4. Host encrypted private key (`host.domain.com.key`)
-5. Host P12 (PFX) bundle (`host.domain.com.p12`)
+1. Root CA certificate chain (Root+Signing) `ca-certificates.crt`
+1. Host CSR `host.domain.com.csr`
+1. Host certificate `host.domain.com.crt`
+1. Host encrypted private key `host.domain.com.key`
+1. Host P12 (PFX) bundle `host.domain.com.p12`
 
 ## Demo
 
