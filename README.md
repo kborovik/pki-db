@@ -30,6 +30,19 @@ X509v3 extensions:
 
 This repository allows you to test your Subject Alternative Names (SANs) and deployment process using a test certificate before submitting a CSR to the corporate PKI.
 
+### Efficient Certificate Generation with GNU Make
+
+GNU Make offers a powerful feature that optimizes the certificate generation process. By leveraging timestamp comparisons, it allows us to skip the generation of certificates when the source files haven't changed. This capability enables us to create an efficient dependency chain, streamlining the entire PKI management workflow.
+
+```
+root_crt ==> signing_crt ==> host_crt
+```
+
+### Requirements
+
+- OpenSSL version 3.0.0 or higher
+- GNU Make 4.0.0 or higher
+
 ### Project Structure
 
 The project is organized as follows:
@@ -39,18 +52,10 @@ The project is organized as follows:
 
 ### Key Components
 
-1. **makefile**: Contains the core logic and automation scripts.
-1. **ca** directory: Stores Certificate Authority related files.
-1. **etc** directory: Stores OpenSSL configuration files.
-1. **certs** directory: Stores generated certificates.
-
-## Efficient Certificate Generation with GNU Make
-
-GNU Make offers a powerful feature that optimizes the certificate generation process. By leveraging timestamp comparisons, it allows us to skip the generation of certificates when the source files haven't changed. This capability enables us to create an efficient dependency chain, streamlining the entire PKI management workflow.
-
-```
-root_crt ==> signing_crt ==> host_crt
-```
+1. `makefile` contains the core logic and automation scripts.
+1. `ca` directory stores Certificate Authority related files.
+1. `etc` directory stores OpenSSL configuration files.
+1. `certs` directory stores generated certificates.
 
 ### Generated Certificate Package
 
@@ -71,10 +76,6 @@ The repository generates a comprehensive certificate package containing:
 ### Creating Host Certificate Bundle
 
 <video src="https://github.com/kborovik/pki-db/assets/59314971/36f1e035-86a0-4279-b0ed-1cbaf3cbc8be"></video>
-
-## Requirements
-
-- OpenSSL version 3.0.0 or higher
 
 ## Usage Guide
 
